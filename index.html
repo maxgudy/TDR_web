@@ -15,19 +15,19 @@
             <svg focusable="false" width="20" height="20" viewBox="0 0 24 24" class="icon1">
                 <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"></path>
             </svg>
-            <span class="GPTPROFES">GPT Profes</span>
+            <span class="GPTPROFES">Agent Professors</span>
         </a>
         <a href="#" class="element nav-element" data-page="faq-email">
             <svg focusable="false" width="20" height="20" viewBox="0 0 24 24" class="icon1" fill="currentColor">
                 <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 14h-8v-2h8v2zm0-4h-8v-2h8v2zm-3-5V3.5L18.5 9H13z"></path>
             </svg>
-            <span>FAQ eMail</span>
+            <span>Agent Famílies i Alumnes</span>
         </a>
         <a href="#" class="element nav-element" data-page="dades-estudiants">
             <svg focusable="false" width="20" height="20" viewBox="0 0 24 24" class="icon1" fill="currentColor">
                 <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"></path>
             </svg>
-            <span>Dades Estudiants</span>
+            <span>Agent Directius</span>
         </a>
     </aside>
 
@@ -36,7 +36,7 @@
         <div class="chat-header" id="chatHeader">
             <div class="header-content">
                 <div class="header-info">
-                    <h2 class="header-title">Assistent IA - TDR</h2>
+                    <h2 class="header-title">Agent Professors</h2>
                     <p class="header-subtitle">Max Gudayol · Automatitzacions amb IA</p>
                 </div>
                 <button class="theme-toggle" id="themeToggle" title="Canviar tema">
@@ -50,10 +50,10 @@
             </div>
         </div>
 
-        <!-- Pàgina: GPT Profes -->
+        <!-- Pàgina: Agent Professors -->
         <div id="page-gpt-profes" class="page active">
             <div class="mainqest" id="mainqest-gpt">
-                <p class="pregunta" id="pregunta-gpt">¿En qué estás trabajando?</p>
+                <p class="pregunta" id="pregunta-gpt">En què estàs treballant?</p>
                 
                 <div class="chat-container" id="chatContainer-gpt" style="display: none;">
                     <div class="messages" id="messages-gpt"></div>
@@ -75,10 +75,10 @@
             </div>
         </div>
 
-        <!-- Pàgina: FAQ eMail -->
+        <!-- Pàgina: Agent Famílies i Alumnes -->
         <div id="page-faq-email" class="page">
             <div class="mainqest" id="mainqest-faq">
-                <p class="pregunta" id="pregunta-faq">¿En qué estás trabajando?</p>
+                <p class="pregunta" id="pregunta-faq">En què estàs treballant?</p>
                 
                 <div class="chat-container" id="chatContainer-faq" style="display: none;">
                     <div class="messages" id="messages-faq"></div>
@@ -100,176 +100,27 @@
             </div>
         </div>
 
-        <!-- Pàgina: Dades Estudiants (Dashboard) -->
+        <!-- Pàgina: Agent Directius -->
         <div id="page-dades-estudiants" class="page">
-            <div class="dashboard-container">
-                <div class="chat-header" id="chatHeader-dashboard">
-                    <div class="header-content">
-                        <div class="header-info">
-                            <h2 class="header-title">Dades Estudiants - Dashboard</h2>
-                            <p class="header-subtitle">Max Gudayol · TDR - Automatitzacions amb IA</p>
-                        </div>
-                        <button class="theme-toggle" id="themeToggle-dashboard" title="Canviar tema">
-                            <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z"></path>
-                            </svg>
-                            <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
-                                <path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z"></path>
-                            </svg>
-                        </button>
+            <div class="mainqest" id="mainqest-dades">
+                <p class="pregunta" id="pregunta-dades">En què estàs treballant?</p>
+                
+                <div class="chat-container" id="chatContainer-dades" style="display: none;">
+                    <div class="messages" id="messages-dades"></div>
+                    <div class="typing-indicator" id="typingIndicator-dades" style="display: none;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
                     </div>
                 </div>
-
-                <div class="dashboard-content">
-                    <!-- Chat Section -->
-                    <div class="dashboard-chat-section">
-                        <div class="dashboard-chat-container">
-                            <div class="dashboard-chat-header">
-                                <h3 class="chat-section-title">💬 Chat d'Assistència</h3>
-                            </div>
-                            <div class="dashboard-chat-messages" id="dashboardChatMessages"></div>
-                            <div class="dashboard-typing-indicator" id="dashboardTypingIndicator" style="display: none;">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
-                            <div class="dashboard-chat-input-container">
-                                <div class="dashboard-plus-sign-icon" id="dashboardPlusIcon">
-                                    <svg width="20" height="20" viewBox="0 0 25 25" fill="rgba(74, 74, 74, 0.9)" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M9.33496 16.5V10.665H3.5C3.13273 10.665 2.83496 10.3673 2.83496 10C2.83496 9.63273 3.13273 9.33496 3.5 9.33496H9.33496V3.5C9.33496 3.13273 9.63273 2.83496 10 2.83496C10.3673 2.83496 10.665 3.13273 10.665 3.5V9.33496H16.5L16.6338 9.34863C16.9369 9.41057 17.165 9.67857 17.165 10C17.165 10.3214 16.9369 10.5894 16.6338 10.6514L16.5 10.665H10.665V16.5C10.665 16.8673 10.3673 17.165 10 17.165C9.63273 17.165 9.33496 16.8673 9.33496 16.5Z"></path>
-                                    </svg>
-                                </div>
-                                <input type="text" id="dashboardInputQuest" placeholder="Fes una pregunta sobre les dades..." class="dashboard-inputquest">
-                            </div>
-                        </div>
+                
+                <div class="questionform" id="questionform-dades">
+                    <div class="plus-sign-icon" id="plusIcon-dades">
+                        <svg width="25" height="25" viewBox="0 0 25 25" fill="rgba(74, 74, 74, 0.9)" xmlns="http://www.w3.org/2000/svg" class="iconplus">
+                            <path d="M9.33496 16.5V10.665H3.5C3.13273 10.665 2.83496 10.3673 2.83496 10C2.83496 9.63273 3.13273 9.33496 3.5 9.33496H9.33496V3.5C9.33496 3.13273 9.63273 2.83496 10 2.83496C10.3673 2.83496 10.665 3.13273 10.665 3.5V9.33496H16.5L16.6338 9.34863C16.9369 9.41057 17.165 9.67857 17.165 10C17.165 10.3214 16.9369 10.5894 16.6338 10.6514L16.5 10.665H10.665V16.5C10.665 16.8673 10.3673 17.165 10 17.165C9.63273 17.165 9.33496 16.8673 9.33496 16.5Z"></path>
+                        </svg>
                     </div>
-
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon">👥</div>
-                            <div class="stat-info">
-                                <h3 class="stat-value">1,234</h3>
-                                <p class="stat-label">Estudiants Actius</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">📚</div>
-                            <div class="stat-info">
-                                <h3 class="stat-value">45</h3>
-                                <p class="stat-label">Assignatures</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">💬</div>
-                            <div class="stat-info">
-                                <h3 class="stat-value">8,567</h3>
-                                <p class="stat-label">Consultes Realitzades</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon">⚡</div>
-                            <div class="stat-info">
-                                <h3 class="stat-value">98.5%</h3>
-                                <p class="stat-label">Precisió IA</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-sections">
-                        <div class="dashboard-card">
-                            <h2 class="card-title">📊 Ús de l'Assistent</h2>
-                            <div class="card-content">
-                                <div class="usage-item">
-                                    <span class="usage-label">Consultes avui:</span>
-                                    <span class="usage-value">127</span>
-                                </div>
-                                <div class="usage-item">
-                                    <span class="usage-label">Consultes aquesta setmana:</span>
-                                    <span class="usage-value">892</span>
-                                </div>
-                                <div class="usage-item">
-                                    <span class="usage-label">Consultes aquest mes:</span>
-                                    <span class="usage-value">3,456</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="dashboard-card">
-                            <h2 class="card-title">🎯 Temes Més Consultats</h2>
-                            <div class="card-content">
-                                <div class="topic-item">
-                                    <span class="topic-name">Horaris i Classes</span>
-                                    <div class="topic-bar">
-                                        <div class="topic-progress" style="width: 85%"></div>
-                                    </div>
-                                    <span class="topic-percent">85%</span>
-                                </div>
-                                <div class="topic-item">
-                                    <span class="topic-name">Informació Acadèmica</span>
-                                    <div class="topic-bar">
-                                        <div class="topic-progress" style="width: 72%"></div>
-                                    </div>
-                                    <span class="topic-percent">72%</span>
-                                </div>
-                                <div class="topic-item">
-                                    <span class="topic-name">FAQ eMail</span>
-                                    <div class="topic-bar">
-                                        <div class="topic-progress" style="width: 58%"></div>
-                                    </div>
-                                    <span class="topic-percent">58%</span>
-                                </div>
-                                <div class="topic-item">
-                                    <span class="topic-name">Altres Consultes</span>
-                                    <div class="topic-bar">
-                                        <div class="topic-progress" style="width: 45%"></div>
-                                    </div>
-                                    <span class="topic-percent">45%</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="dashboard-card">
-                            <h2 class="card-title">🔧 Funcionalitats</h2>
-                            <div class="card-content">
-                                <div class="feature-list">
-                                    <div class="feature-item">
-                                        <span class="feature-icon">✅</span>
-                                        <span class="feature-text">Assistent IA per consultes acadèmiques</span>
-                                    </div>
-                                    <div class="feature-item">
-                                        <span class="feature-icon">✅</span>
-                                        <span class="feature-text">Integració amb sistemes de gestió</span>
-                                    </div>
-                                    <div class="feature-item">
-                                        <span class="feature-icon">✅</span>
-                                        <span class="feature-text">Respostes automàtiques intel·ligents</span>
-                                    </div>
-                                    <div class="feature-item">
-                                        <span class="feature-icon">✅</span>
-                                        <span class="feature-text">Anàlisi de dades en temps real</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="dashboard-card">
-                            <h2 class="card-title">📈 Rendiment del Sistema</h2>
-                            <div class="card-content">
-                                <div class="performance-item">
-                                    <span class="performance-label">Temps mitjà de resposta:</span>
-                                    <span class="performance-value">1.2s</span>
-                                </div>
-                                <div class="performance-item">
-                                    <span class="performance-label">Uptime:</span>
-                                    <span class="performance-value">99.9%</span>
-                                </div>
-                                <div class="performance-item">
-                                    <span class="performance-label">Satisfacció usuari:</span>
-                                    <span class="performance-value">4.8/5</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <input type="text" id="inputquest-dades" placeholder="Pregunta el que vulguis" class="inputquest">
                 </div>
             </div>
         </div>
@@ -282,16 +133,24 @@
     
     <!-- Script específic per a cada pàgina de chat -->
     <script>
-        // Funcionalitat de chat per a GPT Profes i FAQ eMail
+        // Funcionalitat de chat per a tots els agents
         function initChatPage(pageId) {
-            const inputQuest = document.getElementById(`inputquest-${pageId}`);
-            const messagesContainer = document.getElementById(`messages-${pageId}`);
-            const typingIndicator = document.getElementById(`typingIndicator-${pageId}`);
-            const chatContainer = document.getElementById(`chatContainer-${pageId}`);
-            const pregunta = document.getElementById(`pregunta-${pageId}`);
-            const mainqest = document.getElementById(`mainqest-${pageId}`);
-            const questionform = document.getElementById(`questionform-${pageId}`);
-            const plusIcon = document.getElementById(`plusIcon-${pageId}`);
+            // Mapejar IDs per compatibilitat
+            const idMap = {
+                'gpt-profes': 'gpt',
+                'faq-email': 'faq',
+                'dades-estudiants': 'dades'
+            };
+            const shortId = idMap[pageId] || pageId;
+            
+            const inputQuest = document.getElementById(`inputquest-${shortId}`);
+            const messagesContainer = document.getElementById(`messages-${shortId}`);
+            const typingIndicator = document.getElementById(`typingIndicator-${shortId}`);
+            const chatContainer = document.getElementById(`chatContainer-${shortId}`);
+            const pregunta = document.getElementById(`pregunta-${shortId}`);
+            const mainqest = document.getElementById(`mainqest-${shortId}`);
+            const questionform = document.getElementById(`questionform-${shortId}`);
+            const plusIcon = document.getElementById(`plusIcon-${shortId}`);
             
             if (!inputQuest || !messagesContainer) return;
             
@@ -314,8 +173,6 @@
                     questionform.style.maxWidth = 'calc(100% - 280px)';
                 }
             }
-            
-            initializeChat();
             
             function addMessage(text, isUser) {
                 const messageDiv = document.createElement('div');
@@ -351,19 +208,20 @@
                 
                 if (isFirstMessage) {
                     isFirstMessage = false;
+                    initializeChat();
                 }
                 
                 addMessage(message, true);
                 inputQuest.value = '';
                 showTyping();
                 
-                const result = await sendMessageToAgent(message);
+                const result = await sendMessageToAgent(message, pageId);
                 hideTyping();
                 
                 if (result.success) {
                     addMessage(result.response, false);
                 } else {
-                    addMessage('Error al enviar el mensaje. Por favor, intenta de nuevo.', false);
+                    addMessage('Error en enviar el missatge. Si us plau, intenta-ho de nou.', false);
                 }
             }
             
@@ -379,88 +237,21 @@
             }
         }
         
-        // Funcionalitat de chat per al Dashboard
-        function initDashboardChat() {
-            const dashboardInputQuest = document.getElementById('dashboardInputQuest');
-            const dashboardChatMessages = document.getElementById('dashboardChatMessages');
-            const dashboardTypingIndicator = document.getElementById('dashboardTypingIndicator');
-            const dashboardPlusIcon = document.getElementById('dashboardPlusIcon');
-            
-            if (!dashboardInputQuest || !dashboardChatMessages) return;
-            
-            function addDashboardMessage(text, isUser) {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = isUser ? 'dashboard-message dashboard-user-message' : 'dashboard-message dashboard-bot-message';
-                
-                if (!isUser && typeof marked !== 'undefined') {
-                    messageDiv.innerHTML = marked.parse(text);
-                } else {
-                    messageDiv.innerHTML = text;
-                }
-                
-                dashboardChatMessages.appendChild(messageDiv);
-                dashboardChatMessages.scrollTop = dashboardChatMessages.scrollHeight;
-            }
-            
-            function showDashboardTyping() {
-                if (dashboardTypingIndicator) dashboardTypingIndicator.style.display = 'flex';
-                dashboardChatMessages.scrollTop = dashboardChatMessages.scrollHeight;
-            }
-            
-            function hideDashboardTyping() {
-                if (dashboardTypingIndicator) dashboardTypingIndicator.style.display = 'none';
-            }
-            
-            async function sendDashboardMessage() {
-                const message = dashboardInputQuest.value.trim();
-                
-                if (message === '') return;
-                
-                addDashboardMessage(message, true);
-                dashboardInputQuest.value = '';
-                showDashboardTyping();
-                
-                const result = await sendMessageToAgent(message);
-                hideDashboardTyping();
-                
-                if (result.success) {
-                    addDashboardMessage(result.response, false);
-                } else {
-                    addDashboardMessage('Error al enviar el mensaje. Por favor, intenta de nuevo.', false);
-                }
-            }
-            
-            dashboardInputQuest.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    sendDashboardMessage();
-                }
-            });
-            
-            if (dashboardPlusIcon) {
-                dashboardPlusIcon.addEventListener('click', sendDashboardMessage);
-            }
-        }
-        
         // Inicialitzar chats quan es canvia de pàgina
         window.addEventListener('pageChanged', (e) => {
             const pageId = e.detail.pageId;
             
             // Inicialitzar chat específic de la pàgina
-            if (pageId === 'gpt-profes' || pageId === 'faq-email') {
+            if (pageId === 'gpt-profes' || pageId === 'faq-email' || pageId === 'dades-estudiants') {
                 setTimeout(() => initChatPage(pageId), 100);
-            } else if (pageId === 'dades-estudiants') {
-                setTimeout(() => initDashboardChat(), 100);
             }
         });
         
         // Inicialitzar chats a la càrrega inicial
         document.addEventListener('DOMContentLoaded', () => {
             const hash = window.location.hash.slice(1) || 'gpt-profes';
-            if (hash === 'gpt-profes' || hash === 'faq-email') {
+            if (hash === 'gpt-profes' || hash === 'faq-email' || hash === 'dades-estudiants') {
                 setTimeout(() => initChatPage(hash), 200);
-            } else if (hash === 'dades-estudiants') {
-                setTimeout(() => initDashboardChat(), 200);
             }
         });
     </script>

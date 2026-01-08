@@ -10,18 +10,18 @@ const AppState = {
 // Configuració de les pàgines
 const pages = {
     'gpt-profes': {
-        title: 'Assistent IA - TDR',
+        title: 'Agent Professors',
         subtitle: 'Max Gudayol · Automatitzacions amb IA',
         webhookUrl: 'https://m9m.fluxaroo.com/webhook/24c38e21-6962-4344-898c-0e72010fc536/chat'
     },
     'faq-email': {
-        title: 'FAQ eMail - TDR',
+        title: 'Agent Famílies i Alumnes',
         subtitle: 'Max Gudayol · Automatitzacions amb IA',
         webhookUrl: 'https://m9m.fluxaroo.com/webhook/24c38e21-6962-4344-898c-0e72010fc536/chat'
     },
     'dades-estudiants': {
-        title: 'Dades Estudiants - Dashboard',
-        subtitle: 'Max Gudayol · TDR - Automatitzacions amb IA',
+        title: 'Agent Directius',
+        subtitle: 'Max Gudayol · Automatitzacions amb IA',
         webhookUrl: 'https://m9m.fluxaroo.com/webhook/24c38e21-6962-4344-898c-0e72010fc536/chat'
     }
 };
@@ -141,14 +141,7 @@ function updateHeader(pageId) {
 
 // Inicialitzar funcionalitats específiques de cada pàgina
 function initPageSpecificFeatures(pageId) {
-    if (pageId === 'dades-estudiants') {
-        // Inicialitzar dashboard si existeix la funció
-        if (typeof initDashboard === 'function') {
-            initDashboard();
-        }
-    }
-    
-    // Inicialitzar chat per a totes les pàgines que el necessitin
+    // Inicialitzar chat per a totes les pàgines
     initChatForPage(pageId);
 }
 
