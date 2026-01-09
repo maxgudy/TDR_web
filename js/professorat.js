@@ -34,18 +34,6 @@ function setStudentSearchVisibility(isVisible) {
     }
 }
 
-function updateStudentClassPreview() {
-    const preview = document.getElementById('selected-class-info');
-    const hiddenInput = document.getElementById('student-class');
-    if (hiddenInput) {
-        hiddenInput.value = ProfessoratState.selectedClassId || '';
-    }
-    if (preview) {
-        const className = getClassName(ProfessoratState.selectedClassId);
-        preview.textContent = className || 'Cap classe seleccionada';
-    }
-}
-
 function openDeleteClassModal() {
     if (!ProfessoratState.selectedClassId) return;
     pendingDeleteClassId = ProfessoratState.selectedClassId;
@@ -94,25 +82,27 @@ function initSupabaseClient() {
 // Inicialitzar mòdul professorat
 function initProfessorat() {
     console.log('[Professorat] ===== INICIALITZANT MÒDUL PROFESSORAT =====');
-    
-    if (!initSupabaseClient()) {
+
+    const supabaseReady = initSupabaseClient();
+    if (!supabaseReady) {
         console.error('[Professorat] No s\'ha pogut inicialitzar el client de Supabase');
         showFeedback('error', 'Error connectant amb Supabase. Assegura\'t que les taules estan creades.');
-        return;
     }
-    
-    console.log('[Professorat] Client de Supabase inicialitzat, configurant UI...');
+
+    console.log('[Professorat] Configurant UI...');
     setupTabs();
     setupSubtabs();
     setupEventListeners();
     setupCreateClassForm();
-    
-    console.log('[Professorat] Cridant loadClasses...');
-    loadClasses().then(() => {
-        console.log('[Professorat] ===== LOADCLASSES COMPLETAT =====');
-    }).catch(err => {
-        console.error('[Professorat] Error en loadClasses:', err);
-    });
+
+    if (supabaseReady) {
+        console.log('[Professorat] Client de Supabase inicialitzat, carregant dades...');
+        loadClasses().then(() => {
+            console.log('[Professorat] ===== LOADCLASSES COMPLETAT =====');
+        }).catch(err => {
+            console.error('[Professorat] Error en loadClasses:', err);
+        });
+    }
 }
 
 // Configurar pestanyes principals
@@ -121,8 +111,13 @@ function setupTabs() {
     const panels = document.querySelectorAll('.professorat-panel');
     
     tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
+        tab.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             const tabName = tab.getAttribute('data-tab');
+            
+            // Guardar posició de scroll actual
+            const currentScrollY = window.scrollY || window.pageYOffset;
             
             tabs.forEach(t => t.classList.remove('active'));
             tab.classList.add('active');
@@ -131,15 +126,19 @@ function setupTabs() {
                 panel.classList.remove('active');
             });
             
-            // Activar panell seleccionat amb transició suau
+            // Activar panell seleccionat sense scroll ni reflow
             const targetPanel = document.getElementById(`panel-${tabName}`);
             if (targetPanel) {
-                // Forçar reflow per assegurar que la transició funciona
-                void targetPanel.offsetWidth;
-                setTimeout(() => {
-                    targetPanel.classList.add('active');
-                }, 50);
+                targetPanel.classList.add('active');
             }
+            
+            // Restaurar posició de scroll immediatament
+            window.scrollTo(0, currentScrollY);
+            
+            // També prevenir scroll després del següent frame
+            requestAnimationFrame(() => {
+                window.scrollTo(0, currentScrollY);
+            });
             
             // Carregar dades quan es canvia de pestanya
             if (tabName === 'classes') {
@@ -166,8 +165,13 @@ function setupSubtabs() {
     const subpanels = document.querySelectorAll('.registre-subpanel');
     
     subtabs.forEach(subtab => {
-        subtab.addEventListener('click', () => {
+        subtab.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             const subtabName = subtab.getAttribute('data-subtab');
+            
+            // Guardar posició de scroll actual
+            const currentScrollY = window.scrollY || window.pageYOffset;
             
             subtabs.forEach(st => st.classList.remove('active'));
             subtab.classList.add('active');
@@ -178,21 +182,41 @@ function setupSubtabs() {
                     subpanel.classList.add('active');
                 }
             });
+            
+            // Restaurar posició de scroll immediatament
+            window.scrollTo(0, currentScrollY);
+            
+            // També prevenir scroll després del següent frame
+            requestAnimationFrame(() => {
+                window.scrollTo(0, currentScrollY);
+            });
         });
     });
 }
 
 // Configurar event listeners
 function setupEventListeners() {
+    console.log('[Professorat] setupEventListeners - configurant listeners...');
+    
     // Selector de classe (a pestanya Classes)
     const classSelector = document.getElementById('classSelector');
     const deleteClassBtn = document.getElementById('deleteClassBtn');
     
+    console.log('[Professorat] Elements trobats:', {
+        classSelector: !!classSelector,
+        deleteClassBtn: !!deleteClassBtn
+    });
+    
     if (classSelector) {
         classSelector.addEventListener('change', (e) => {
             ProfessoratState.selectedClassId = e.target.value || null;
-            updateStudentClassPreview();
-            updateStudentClassPreview();
+            
+            // Guardar al localStorage per mantenir la selecció
+            if (ProfessoratState.selectedClassId) {
+                localStorage.setItem('selectedClassId', ProfessoratState.selectedClassId);
+            } else {
+                localStorage.removeItem('selectedClassId');
+            }
             
             // Mostrar/ocultar botó eliminar classe
             if (deleteClassBtn) {
@@ -200,11 +224,15 @@ function setupEventListeners() {
             }
             
             if (ProfessoratState.selectedClassId) {
+                // Carregar dades per a la pestanya Classes
                 loadExcursions(ProfessoratState.selectedClassId);
                 loadHomeworks(ProfessoratState.selectedClassId);
+                // Carregar dades per a la pestanya Alumnes
+                loadStudents(ProfessoratState.selectedClassId);
             } else {
                 clearExcursionsList();
                 clearHomeworksList();
+                clearStudentsTable();
             }
         });
     }
@@ -217,37 +245,16 @@ function setupEventListeners() {
         deleteClassConfirmBtn.addEventListener('click', executeDeleteClass);
     }
     
-    // Selector de classe (a pestanya Alumnes)
-    const classSelectorStudents = document.getElementById('classSelectorStudents');
-    if (classSelectorStudents) {
-        // Sincronitzar amb el selector principal
-        classSelectorStudents.addEventListener('change', (e) => {
-            ProfessoratState.selectedClassId = e.target.value || null;
-            updateStudentClassPreview();
-            updateStudentClassPreview();
-            
-            // Sincronitzar amb l'altre selector
-            if (classSelector) {
-                classSelector.value = e.target.value;
-            }
-            
-            // Mostrar/ocultar botó eliminar classe
-            if (deleteClassBtn) {
-                deleteClassBtn.style.display = ProfessoratState.selectedClassId ? 'inline-block' : 'none';
-            }
-            
-            if (ProfessoratState.selectedClassId) {
-                loadStudents(ProfessoratState.selectedClassId);
-            } else {
-                clearStudentsTable();
-            }
-        });
-    }
-    
     // Crear classe
     const createClassBtn = document.getElementById('createClassBtn');
+    console.log('[Professorat] createClassBtn trobat:', !!createClassBtn);
     if (createClassBtn) {
-        createClassBtn.addEventListener('click', showCreateClassDialog);
+        console.log('[Professorat] Afegint listener a createClassBtn');
+        createClassBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('[Professorat] createClassBtn clicat!');
+            showCreateClassDialog();
+        });
     }
     
     // Afegir alumne
@@ -256,14 +263,23 @@ function setupEventListeners() {
     const formStudent = document.getElementById('form-student');
     const studentClassSelect = document.getElementById('student-class');
     
+    console.log('[Professorat] Alumnes - Elements trobats:', {
+        addStudentBtn: !!addStudentBtn,
+        formStudent: !!formStudent
+    });
+    
     if (addStudentBtn) {
-        addStudentBtn.addEventListener('click', () => {
+        console.log('[Professorat] Afegint listener a addStudentBtn');
+        addStudentBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('[Professorat] addStudentBtn clicat!');
             if (formStudent) {
                 formStudent.style.display = 'block';
                 setStudentSearchVisibility(false);
                 if (studentClassSelect) {
                     studentClassSelect.value = ProfessoratState.selectedClassId || '';
                 }
+                console.log('[Professorat] Formulari alumne mostrat');
             }
         });
     }
@@ -298,9 +314,21 @@ function setupEventListeners() {
     const cancelExcursionForm = document.getElementById('cancelExcursionForm');
     const formExcursion = document.getElementById('form-excursion');
     
+    console.log('[Professorat] Excursions - Elements trobats:', {
+        createExcursionBtn: !!createExcursionBtn,
+        cancelExcursionForm: !!cancelExcursionForm,
+        formExcursion: !!formExcursion
+    });
+    
     if (createExcursionBtn) {
-        createExcursionBtn.addEventListener('click', () => {
-            if (formExcursion) formExcursion.style.display = 'block';
+        console.log('[Professorat] Afegint listener a createExcursionBtn');
+        createExcursionBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('[Professorat] createExcursionBtn clicat!');
+            if (formExcursion) {
+                formExcursion.style.display = 'block';
+                console.log('[Professorat] Formulari excursió mostrat');
+            }
         });
     }
     if (cancelExcursionForm) {
@@ -387,6 +415,26 @@ async function loadClasses() {
         console.log('[Professorat] Cridant updateClassSelector...');
         updateClassSelector();
         console.log('[Professorat] updateClassSelector completat');
+        
+        // Restaurar la classe seleccionada des del localStorage
+        const savedClassId = localStorage.getItem('selectedClassId');
+        if (savedClassId && ProfessoratState.classes.find(c => c.id === savedClassId)) {
+            const selector = document.getElementById('classSelector');
+            if (selector) {
+                selector.value = savedClassId;
+                ProfessoratState.selectedClassId = savedClassId;
+                // Carregar dades per a la classe seleccionada
+                loadExcursions(savedClassId);
+                loadHomeworks(savedClassId);
+                loadStudents(savedClassId);
+                
+                // Mostrar botó eliminar
+                const deleteClassBtn = document.getElementById('deleteClassBtn');
+                if (deleteClassBtn) {
+                    deleteClassBtn.style.display = 'inline-block';
+                }
+            }
+        }
     } catch (error) {
         console.error('[Professorat] Excepció carregant classes:', error);
         console.error('[Professorat] Stack trace:', error.stack);
@@ -494,34 +542,29 @@ async function performDeleteClass(classId) {
 }
 
 function updateClassSelector() {
-    const selectorIds = ['classSelector', 'classSelectorStudents'];
-    console.log('[Professorat] Actualitzant selectors de classes amb classes:', ProfessoratState.classes);
+    const select = document.getElementById('classSelector');
+    console.log('[Professorat] Actualitzant selector de classes amb classes:', ProfessoratState.classes);
 
-    selectorIds.forEach(id => {
-        const select = document.getElementById(id);
-        if (!select) return;
+    if (!select) return;
 
-        const previousValue = select.value;
-        select.innerHTML = '<option value="">Selecciona una classe</option>';
+    select.innerHTML = '<option value="">Selecciona una classe</option>';
 
-        if (ProfessoratState.classes && Array.isArray(ProfessoratState.classes) && ProfessoratState.classes.length > 0) {
-            ProfessoratState.classes.forEach(cls => {
-                if (cls && cls.id && cls.name) {
-                    const option = document.createElement('option');
-                    option.value = cls.id;
-                    option.textContent = cls.name;
-                    select.appendChild(option);
-                } else {
-                    console.warn('[Professorat] Classe invÇÿlida:', cls);
-                }
-            });
-        }
+    if (ProfessoratState.classes && Array.isArray(ProfessoratState.classes) && ProfessoratState.classes.length > 0) {
+        ProfessoratState.classes.forEach(cls => {
+            if (cls && cls.id && cls.name) {
+                const option = document.createElement('option');
+                option.value = cls.id;
+                option.textContent = cls.name;
+                select.appendChild(option);
+            } else {
+                console.warn('[Professorat] Classe invàlida:', cls);
+            }
+        });
+    }
 
-        select.value = ProfessoratState.selectedClassId || '';
-    });
+    select.value = ProfessoratState.selectedClassId || '';
 
-    console.log(`[Professorat] Selectors actualitzats amb ${ProfessoratState.classes.length} classes`);
-    updateStudentClassPreview();
+    console.log(`[Professorat] Selector actualitzat amb ${ProfessoratState.classes.length} classes`);
 }
 function showCreateClassDialog() {
     const modal = document.getElementById('createClassModal');
@@ -536,6 +579,104 @@ function closeCreateClassModal() {
     if (modal) {
         modal.style.display = 'none';
         document.getElementById('createClassForm').reset();
+    }
+}
+
+function showPanel(panel) {
+    if (!panel) return;
+    panel.classList.remove('hidden-panel');
+    panel.style.display = 'block';
+}
+
+function hidePanel(panel) {
+    if (!panel) return;
+    panel.classList.add('hidden-panel');
+    panel.style.display = 'none';
+}
+
+function setupUiFallbacks() {
+    const createClassBtn = document.getElementById('createClassBtn');
+    const createClassModal = document.getElementById('createClassModal');
+    const createClassForm = document.getElementById('createClassForm');
+
+    if (createClassBtn) {
+        createClassBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showCreateClassDialog();
+        });
+    }
+
+    if (createClassModal) {
+        createClassModal.addEventListener('click', (e) => {
+            if (e.target === createClassModal) {
+                closeCreateClassModal();
+            }
+        });
+    }
+
+    if (createClassForm) {
+        createClassForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+        });
+    }
+
+    const addStudentBtn = document.getElementById('addStudentBtn');
+    const cancelStudentForm = document.getElementById('cancelStudentForm');
+    const formStudent = document.getElementById('form-student');
+
+    if (addStudentBtn) {
+        addStudentBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPanel(formStudent);
+            setStudentSearchVisibility(false);
+        });
+    }
+
+    if (cancelStudentForm) {
+        cancelStudentForm.addEventListener('click', (e) => {
+            e.preventDefault();
+            hidePanel(formStudent);
+            if (formStudent) formStudent.reset();
+            setStudentSearchVisibility(true);
+        });
+    }
+
+    const createExcursionBtn = document.getElementById('createExcursionBtn');
+    const cancelExcursionForm = document.getElementById('cancelExcursionForm');
+    const formExcursion = document.getElementById('form-excursion');
+
+    if (createExcursionBtn) {
+        createExcursionBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPanel(formExcursion);
+        });
+    }
+
+    if (cancelExcursionForm) {
+        cancelExcursionForm.addEventListener('click', (e) => {
+            e.preventDefault();
+            hidePanel(formExcursion);
+            if (formExcursion) formExcursion.reset();
+        });
+    }
+
+    const createHomeworkBtn = document.getElementById('createHomeworkBtn');
+    const cancelHomeworkForm = document.getElementById('cancelHomeworkForm');
+    const formHomework = document.getElementById('form-homework');
+
+    if (createHomeworkBtn) {
+        createHomeworkBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPanel(formHomework);
+        });
+    }
+
+    if (cancelHomeworkForm) {
+        cancelHomeworkForm.addEventListener('click', (e) => {
+            e.preventDefault();
+            hidePanel(formHomework);
+            if (formHomework) formHomework.reset();
+        });
     }
 }
 
@@ -1338,15 +1479,19 @@ async function loadExcursions(classId) {
 
 async function handleCreateExcursion(e) {
     e.preventDefault();
+    e.stopPropagation();
+    
+    console.log('[Professorat] handleCreateExcursion cridat');
+    console.log('[Professorat] selectedClassId:', ProfessoratState.selectedClassId);
     
     if (!ProfessoratState.selectedClassId) {
         showFeedback('error', 'Selecciona una classe primer');
-        return;
+        return false;
     }
     
     if (!supabaseClient) {
         showFeedback('error', 'Client de Supabase no inicialitzat');
-        return;
+        return false;
     }
     
     const formData = new FormData(e.target);
@@ -1356,6 +1501,8 @@ async function handleCreateExcursion(e) {
         date: formData.get('date'),
         price: formData.get('price') ? parseFloat(formData.get('price')) : null
     };
+    
+    console.log('[Professorat] Dades excursió:', excursionData);
     
     try {
         const { data: excursion, error: excursionError } = await supabaseClient
@@ -1367,8 +1514,10 @@ async function handleCreateExcursion(e) {
         if (excursionError) {
             console.error('[Professorat] Error creant excursió:', excursionError);
             showFeedback('error', `Error creant excursió: ${excursionError.message}`);
-            return;
+            return false;
         }
+        
+        console.log('[Professorat] Excursió creada:', excursion);
         
         // Crear status per a tots els alumnes de la classe
         const { data: students } = await supabaseClient
@@ -1398,6 +1547,8 @@ async function handleCreateExcursion(e) {
         console.error('[Professorat] Excepció creant excursió:', error);
         showFeedback('error', 'Error de connexió amb Supabase');
     }
+    
+    return false;
 }
 
 function updateExcursionsList() {
@@ -1576,6 +1727,7 @@ async function loadHomeworks(classId) {
 
 async function handleCreateHomework(e) {
     e.preventDefault();
+    e.stopPropagation();
     
     if (!ProfessoratState.selectedClassId) {
         showFeedback('error', 'Selecciona una classe primer');
@@ -1951,10 +2103,10 @@ function selectStudentFromGlobalSearch(studentId, firstName, lastName, className
         globalSearch.value = '';
     }
     
-    // Canviar a pestanya Notes
-    const notesTab = document.querySelector('[data-tab="notes"]');
-    if (notesTab) {
-        notesTab.click();
+    // Canviar a pestanya Alumnes (que ara inclou Notes)
+    const studentsTab = document.querySelector('[data-tab="students"]');
+    if (studentsTab) {
+        studentsTab.click();
         
         // Seleccionar l'alumne després d'un petit delay per assegurar que la pestanya està activa
         setTimeout(() => {
@@ -2048,22 +2200,44 @@ window.markAllExcursion = markAllExcursion;
 window.closeExcursionDetail = closeExcursionDetail;
 window.closeHomeworkDetail = closeHomeworkDetail;
 window.closeCreateClassModal = closeCreateClassModal;
+window.openDeleteClassModal = openDeleteClassModal;
+window.closeDeleteClassModal = closeDeleteClassModal;
 window.prepareGradeEdit = prepareGradeEdit;
 window.deleteGrade = deleteGrade;
+window.handleGlobalStudentSearch = handleGlobalStudentSearch;
+window.performStudentSearch = performStudentSearch;
+
+// Variable per evitar inicialitzacions múltiples
+let isInitialized = false;
+
+// Funció segura d'inicialització
+function safeInitProfessorat() {
+    if (isInitialized) {
+        console.log('[Professorat] Ja inicialitzat, saltant...');
+        return;
+    }
+
+    console.log('[Professorat] Inicialitzant ara...');
+    isInitialized = true;
+    initProfessorat();
+}
 
 // Inicialitzar quan es carrega la pàgina
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(initProfessorat, 500);
+        setTimeout(safeInitProfessorat, 100);
+        setupUiFallbacks();
     });
 } else {
-    setTimeout(initProfessorat, 500);
+    setTimeout(safeInitProfessorat, 100);
+    setupUiFallbacks();
 }
 
 // També inicialitzar quan es canvia a la pàgina de professors
 window.addEventListener('pageChanged', (e) => {
-    if (e.detail.pageId === 'gpt-profes') {
-        setTimeout(initProfessorat, 300);
+    if (e.detail.pageId === 'gpt-profes' && !isInitialized) {
+        setTimeout(safeInitProfessorat, 50);
+        setupUiFallbacks();
     }
 });
 

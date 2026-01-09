@@ -1275,6 +1275,45 @@ body.dark-mode .suggestion-text {
     min-height: 44px;
 }
 
+select {
+    background-color: #ffffff;
+    color: rgb(68, 71, 70);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-height: 44px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: rgba(0, 153, 255, 0.6);
+    box-shadow: 0 0 0 3px rgba(0, 153, 255, 0.15);
+}
+
+select option {
+    background-color: #ffffff;
+    color: rgb(68, 71, 70);
+}
+
+body.dark-mode select {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode select:focus {
+    border-color: rgba(0, 122, 204, 0.6);
+    box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.2);
+}
+
+body.dark-mode select option {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
 .preview-row {
     display: flex;
     align-items: center;
@@ -1326,7 +1365,33 @@ body.dark-mode .suggestion-text {
     padding: 14px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 16px;
+    width: 100%;
+    max-width: 520px;
+}
+
+.small-form .form-row {
+    display: grid;
+    grid-template-columns: 120px minmax(180px, 320px);
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 10px;
+}
+
+.small-form .form-row input,
+.small-form .form-row textarea,
+.small-form .form-row select {
+    min-height: 32px;
+    padding: 6px 10px;
+    font-size: 13px;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.small-form .form-actions {
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 6px;
 }
 
 .hidden-panel {
@@ -1378,6 +1443,15 @@ body.dark-mode .suggestion-text {
     gap: 12px;
 }
 
+.notes-section-wrapper {
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
 .students-table {
     width: 100%;
     border-collapse: collapse;
@@ -1403,6 +1477,7 @@ body.dark-mode .suggestion-text {
     padding: 8px 14px;
     background: rgba(255, 255, 255, 0.05);
     color: #fff;
+    box-sizing: border-box;
 }
 
 .grade-form {
