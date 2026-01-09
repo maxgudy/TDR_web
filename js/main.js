@@ -143,6 +143,23 @@ function updateHeader(pageId) {
 function initPageSpecificFeatures(pageId) {
     // Inicialitzar chat per a totes les pàgines
     initChatForPage(pageId);
+    
+    // Inicialitzar mòdul professorat si estem a la pàgina correcta
+    if (pageId === 'gpt-profes' && typeof initProfessorat === 'function') {
+        // Esperar una mica per assegurar que Supabase està inicialitzat
+        setTimeout(() => {
+            if (window.supabaseClient) {
+                initProfessorat();
+            } else {
+                console.warn('[Main] Supabase client no disponible, reintentant...');
+                setTimeout(() => {
+                    if (window.supabaseClient && typeof initProfessorat === 'function') {
+                        initProfessorat();
+                    }
+                }, 500);
+            }
+        }, 100);
+    }
 }
 
 // Inicialitzar chat per a una pàgina

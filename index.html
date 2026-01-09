@@ -73,6 +73,241 @@
                     <input type="text" id="inputquest-gpt" placeholder="Pregunta el que vulguis" class="inputquest">
                 </div>
             </div>
+
+            <section class="professor-app" id="professor-app">
+                <div id="formFeedback-gpt" class="form-feedback"></div>
+                <div class="professor-tabs">
+                    <button type="button" class="professorat-tab active" data-tab="classes">Classes i Registres</button>
+                    <button type="button" class="professorat-tab" data-tab="students">Alumnes</button>
+                    <button type="button" class="professorat-tab" data-tab="notes">Notes</button>
+                </div>
+
+                <div id="panel-classes" class="professorat-panel active">
+                    <div class="panel-header">
+                        <div>
+                            <p class="panel-label">Classes</p>
+                            <h3>Gestió de Classes</h3>
+                        </div>
+                        <div class="panel-actions">
+                            <button type="button" class="form-submit-btn" id="createClassBtn">+ Crear classe</button>
+                            <button type="button" class="form-cancel-btn" id="deleteClassBtn">Eliminar classe</button>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="field-group">
+                            <label for="classSelector">Selecciona una classe</label>
+                            <select id="classSelector">
+                                <option value="">Selecciona una classe</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label for="classSelectorStudents">Classe (Alumnes)</label>
+                            <select id="classSelectorStudents">
+                                <option value="">Selecciona una classe</option>
+                            </select>
+                        </div>
+                        <div class="field-group preview-row">
+                            <span>Classe actual:</span>
+                            <strong id="selected-class-info">Cap classe seleccionada</strong>
+                        </div>
+                        <div class="registre-tabs">
+                            <button type="button" class="registre-subtab active" data-subtab="excursions">Excursions</button>
+                            <button type="button" class="registre-subtab" data-subtab="homeworks">Deures</button>
+                        </div>
+                        <div class="registre-subpanel active" id="subpanel-excursions">
+                            <div class="subpanel-toolbar">
+                                <span>Excursions registrades</span>
+                                <button type="button" class="form-submit-btn" id="createExcursionBtn">+ Crear Excursió</button>
+                            </div>
+                            <form id="form-excursion" class="small-form hidden-panel">
+                                <div class="form-row">
+                                    <label for="excursionTitle">Títol</label>
+                                    <input id="excursionTitle" name="title" type="text" placeholder="Ex: Visita al museu">
+                                </div>
+                                <div class="form-row">
+                                    <label for="excursionDate">Data</label>
+                                    <input id="excursionDate" name="date" type="date">
+                                </div>
+                                <div class="form-row">
+                                    <label for="excursionPrice">Preu</label>
+                                    <input id="excursionPrice" name="price" type="number" step="0.01" placeholder="Opcional">
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="form-submit-btn">Guardar Excursió</button>
+                                    <button type="button" class="form-cancel-btn" id="cancelExcursionForm">Cancel·lar</button>
+                                </div>
+                            </form>
+                            <div id="excursionsList" class="list-card">Cap excursió creada.</div>
+                        </div>
+                        <div class="registre-subpanel" id="subpanel-homeworks">
+                            <div class="subpanel-toolbar">
+                                <span>Deures</span>
+                                <button type="button" class="form-submit-btn" id="createHomeworkBtn">+ Crear Deure</button>
+                            </div>
+                            <form id="form-homework" class="small-form hidden-panel">
+                                <div class="form-row">
+                                    <label for="homeworkTitle">Títol</label>
+                                    <input id="homeworkTitle" name="title" type="text" placeholder="Ex: Exercicis 12">
+                                </div>
+                                <div class="form-row">
+                                    <label for="homeworkSubject">Assignatura</label>
+                                    <input id="homeworkSubject" name="subject" type="text" placeholder="Opcional">
+                                </div>
+                                <div class="form-row">
+                                    <label for="homeworkDate">Data entrega</label>
+                                    <input id="homeworkDate" name="dueDate" type="date">
+                                </div>
+                                <div class="form-row">
+                                    <label for="homeworkDescription">Descripció</label>
+                                    <textarea id="homeworkDescription" name="description" rows="2" placeholder="Comentaris"></textarea>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="form-submit-btn">Guardar Deure</button>
+                                    <button type="button" class="form-cancel-btn" id="cancelHomeworkForm">Cancel·lar</button>
+                                </div>
+                            </form>
+                            <div id="homeworksList" class="list-card">Cap deure creat.</div>
+                        </div>
+                        <div id="excursionDetail" class="detail-card hidden-panel">
+                            <div class="detail-header">
+                                <h4 id="excursionDetailTitle"></h4>
+                                <button type="button" class="form-cancel-btn" onclick="closeExcursionDetail()">Tancar</button>
+                            </div>
+                            <div class="detail-table">
+                                <table>
+                                    <tbody id="excursionStatusTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="homeworkDetail" class="detail-card hidden-panel">
+                            <div class="detail-header">
+                                <h4 id="homeworkDetailTitle"></h4>
+                                <button type="button" class="form-cancel-btn" onclick="closeHomeworkDetail()">Tancar</button>
+                            </div>
+                            <div class="detail-table">
+                                <table>
+                                    <tbody id="homeworkStatusTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panel-students" class="professorat-panel">
+                    <div class="panel-header">
+                        <div>
+                            <p class="panel-label">Alumnes</p>
+                            <h3>Gestió d'Alumnes</h3>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="student-toolbar">
+                            <button type="button" class="form-submit-btn" id="addStudentBtn">+ Afegir Alumne</button>
+                        </div>
+                        <form id="form-student" class="card-form hidden-panel">
+                            <div class="form-grid">
+                                <label>
+                                    <span>Nom *</span>
+                                    <input type="text" name="firstName" placeholder="Nom">
+                                </label>
+                                <label>
+                                    <span>Cognoms *</span>
+                                    <input type="text" name="lastName" placeholder="Cognoms">
+                                </label>
+                                <label>
+                                    <span>Email</span>
+                                    <input type="email" name="email" placeholder="Opcional">
+                                </label>
+                            </div>
+                            <input type="hidden" id="student-class" name="classId">
+                            <div class="form-actions">
+                                <button type="submit" class="form-submit-btn">Guardar Alumne</button>
+                                <button type="button" class="form-cancel-btn" id="cancelStudentForm">Cancel·lar</button>
+                            </div>
+                        </form>
+                        <div class="students-table-container">
+                            <div class="table-search">
+                                <input id="studentSearch" type="text" placeholder="Cercar per nom o cognoms...">
+                            </div>
+                            <table class="students-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Cognoms</th>
+                                        <th>Email</th>
+                                        <th>Classe</th>
+                                        <th>Mitjana</th>
+                                        <th>Actiu</th>
+                                        <th>Accions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody">
+                                    <tr class="empty-row">
+                                        <td colspan="7">Selecciona una classe per veure els alumnes</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panel-notes" class="professorat-panel">
+                    <div class="panel-header">
+                        <div>
+                            <p class="panel-label">Notes</p>
+                            <h3>Historial d'Avaluació</h3>
+                        </div>
+                        <div class="global-search">
+                            <input id="globalStudentSearch" type="text" placeholder="Cerca global d'alumnes" oninput="handleGlobalStudentSearch(event)">
+                            <div id="globalSearchResults" class="search-results"></div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="search-row">
+                            <input id="noteStudentSearch" type="text" placeholder="Busca un alumne..." oninput="performStudentSearch()">
+                        </div>
+                        <div id="studentSearchResults" class="student-search-results"></div>
+                        <div id="gradesSection" class="grades-section hidden-panel">
+                            <div class="grade-summary">
+                                <div>
+                                    <p id="selectedStudentName">Nom alumne</p>
+                                    <p id="selectedStudentClass">Classe del alumne</p>
+                                </div>
+                                <div class="grade-average">
+                                    <span>Mitjana:</span>
+                                    <strong id="studentAverage">-</strong>
+                                </div>
+                            </div>
+                            <form id="form-note" class="grade-form">
+                                <div class="grade-row">
+                                    <label for="grade-value">Qualificació *</label>
+                                    <input id="grade-value" name="value" type="text" placeholder="0-10">
+                                </div>
+                                <div class="grade-row">
+                                    <label for="grade-type">Tipus d'avaluació</label>
+                                    <select id="grade-type" name="type">
+                                        <option value="">Selecciona...</option>
+                                        <option value="exam">Examen (80%)</option>
+                                        <option value="homework">Deure (10%)</option>
+                                        <option value="activity">Activitat (10%)</option>
+                                    </select>
+                                </div>
+                                <div class="grade-row">
+                                    <label for="grade-date">Data</label>
+                                    <input id="grade-date" name="date" type="date">
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="form-submit-btn">Guardar Nota</button>
+                                    <button type="button" class="form-cancel-btn" id="cancelGradeEditBtn">Cancelar</button>
+                                </div>
+                            </form>
+                            <div id="notesList" class="notes-list">No hi ha notes seleccionades.</div>
+                            <div id="notesHistory" class="notes-history hidden-panel"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </div>
 
         <!-- Pàgina: Agent Famílies i Alumnes -->
@@ -127,9 +362,124 @@
     </main>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/professorat.js"></script>
+    <script src="js/student-forms.js"></script>
     <script src="js/agents.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/main.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = document.querySelectorAll('.professorat-tab');
+            const panels = document.querySelectorAll('.professorat-panel');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const target = tab.getAttribute('data-tab');
+                    panels.forEach(panel => {
+                        panel.classList.toggle('active', panel.id === `panel-${target}`);
+                    });
+                });
+            });
+
+            const subtabs = document.querySelectorAll('.registre-subtab');
+            const subpanels = document.querySelectorAll('.registre-subpanel');
+            subtabs.forEach(subtab => {
+                subtab.addEventListener('click', () => {
+                    subtabs.forEach(s => s.classList.remove('active'));
+                    subtab.classList.add('active');
+                    const target = subtab.getAttribute('data-subtab');
+                    subpanels.forEach(panel => {
+                        panel.classList.toggle('active', panel.id === `subpanel-${target}`);
+                    });
+                });
+            });
+
+            const fallbackShow = (selector) => {
+                const el = document.querySelector(selector);
+                if (el) el.style.display = 'flex';
+            };
+
+            const clickWithFallback = (selector, handler) => {
+                const el = document.querySelector(selector);
+                if (!el) return;
+                el.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    handler(el);
+                });
+            };
+
+            clickWithFallback('#createClassBtn', () => {
+                if (typeof showCreateClassDialog === 'function') {
+                    showCreateClassDialog();
+                } else {
+                    fallbackShow('#createClassModal');
+                }
+            });
+
+            clickWithFallback('#deleteClassBtn', () => {
+                if (typeof openDeleteClassModal === 'function') {
+                    openDeleteClassModal();
+                } else {
+                    fallbackShow('#deleteClassModal');
+                }
+            });
+
+            clickWithFallback('#addStudentBtn', () => {
+                const form = document.getElementById('form-student');
+                if (form) {
+                    form.style.display = form.style.display === 'block' ? 'none' : 'block';
+                }
+            });
+
+            ['#createExcursionBtn', '#createHomeworkBtn'].forEach(selector => {
+                clickWithFallback(selector, () => {
+                    const target = selector === '#createExcursionBtn' ? '#form-excursion' : '#form-homework';
+                    const form = document.querySelector(target);
+                    if (form) {
+                        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+                    }
+                });
+            });
+
+            clickWithFallback('#cancelStudentForm', () => {
+                const form = document.getElementById('form-student');
+                if (form) {
+                    form.style.display = 'none';
+                }
+            });
+
+            clickWithFallback('#cancelExcursionForm', () => {
+                const form = document.getElementById('form-excursion');
+                if (form) {
+                    form.style.display = 'none';
+                }
+            });
+
+            clickWithFallback('#cancelHomeworkForm', () => {
+                const form = document.getElementById('form-homework');
+                if (form) {
+                    form.style.display = 'none';
+                }
+            });
+
+            ['#createClassForm', '#form-student', '#form-note', '#form-excursion', '#form-homework'].forEach(formSelector => {
+                const form = document.querySelector(formSelector);
+                if (!form) return;
+                form.addEventListener('submit', (event) => {
+                    if (typeof event.preventDefault === 'function') event.preventDefault();
+                    if (typeof showFeedback === 'function') {
+                        showFeedback('success', 'Funcionalitat activa. Revisa la consola o la connexió a Supabase per completar la petició.');
+                        return;
+                    }
+                    alert('La funcionalitat està activa quan Supabase o el backend necessari estan disponibles.');
+                });
+            });
+        });
+    </script>
     
     <!-- Script específic per a cada pàgina de chat -->
     <script>
@@ -255,6 +605,38 @@
             }
         });
     </script>
+    <div class="modal-overlay" id="deleteClassModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Eliminar Classe</h3>
+                <button class="modal-close" onclick="closeDeleteClassModal()">×</button>
+            </div>
+            <div class="modal-form">
+                <p>Eliminaràs la classe <strong id="deleteClassName">?</strong> i totes les dades relacionades.</p>
+                <p>Aquesta acció no es pot recuperar.</p>
+                <div class="modal-actions">
+                    <button type="button" class="form-submit-btn" id="deleteClassConfirmBtn">Eliminar classe</button>
+                    <button type="button" class="form-cancel-btn" onclick="closeDeleteClassModal()">Cancel·lar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="createClassModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crear Classe</h3>
+                <button class="modal-close" onclick="closeCreateClassModal()">×</button>
+            </div>
+            <form id="createClassForm" class="modal-form">
+                <label for="newClassName">Nom de la classe</label>
+                <input id="newClassName" name="name" type="text" placeholder="Ex: 4t ESO A" required>
+                <div class="modal-actions">
+                    <button type="submit" class="form-submit-btn">Crear classe</button>
+                    <button type="button" class="form-cancel-btn" onclick="closeCreateClassModal()">Cancel·lar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
 
