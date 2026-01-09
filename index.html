@@ -108,18 +108,20 @@
                                 <span>Excursions registrades</span>
                                 <button type="button" class="form-submit-btn" id="createExcursionBtn">+ Crear Excursió</button>
                             </div>
-                            <form id="form-excursion" class="small-form hidden-panel">
-                                <div class="form-row">
-                                    <label for="excursionTitle">Títol</label>
-                                    <input id="excursionTitle" name="title" type="text" placeholder="Ex: Visita al museu">
-                                </div>
-                                <div class="form-row">
-                                    <label for="excursionDate">Data</label>
-                                    <input id="excursionDate" name="date" type="date">
-                                </div>
-                                <div class="form-row">
-                                    <label for="excursionPrice">Preu</label>
-                                    <input id="excursionPrice" name="price" type="number" step="0.01" placeholder="Opcional">
+                            <form id="form-excursion" class="clean-form hidden-panel">
+                                <div class="form-grid">
+                                    <div class="form-field span-2">
+                                        <label for="excursionTitle">Títol</label>
+                                        <input id="excursionTitle" name="title" type="text" placeholder="Ex: Visita al museu">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="excursionDate">Data</label>
+                                        <input id="excursionDate" name="date" type="date">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="excursionPrice">Preu</label>
+                                        <input id="excursionPrice" name="price" type="number" step="0.01" placeholder="Opcional">
+                                    </div>
                                 </div>
                                 <div class="form-actions">
                                     <button type="submit" class="form-submit-btn">Guardar Excursió</button>
@@ -127,28 +129,57 @@
                                 </div>
                             </form>
                             <div id="excursionsList" class="list-card">Cap excursió creada.</div>
+                            <div id="excursionDetail" class="detail-card hidden-panel">
+                                <div class="detail-header">
+                                    <div class="detail-heading">
+                                        <p class="panel-label">Gestió d'assistència</p>
+                                        <h4 id="excursionDetailTitle"></h4>
+                                        <p id="excursionDetailMeta" class="detail-meta"></p>
+                                    </div>
+                                    <div class="detail-actions">
+                                        <button type="button" class="detail-action-btn" id="excursionEditBtn">Editar</button>
+                                        <button type="button" class="detail-action-btn" id="excursionDeleteBtn">Eliminar</button>
+                                        <button type="button" class="form-cancel-btn" onclick="closeExcursionDetail()">Tancar</button>
+                                    </div>
+                                </div>
+                                <div class="detail-table">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Alumne</th>
+                                                <th>Ve</th>
+                                                <th>Pagat</th>
+                                                <th>Comentari</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="excursionStatusTableBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                         <div class="registre-subpanel" id="subpanel-homeworks">
                             <div class="subpanel-toolbar">
                                 <span>Deures</span>
                                 <button type="button" class="form-submit-btn" id="createHomeworkBtn">+ Crear Deure</button>
                             </div>
-                            <form id="form-homework" class="small-form hidden-panel">
-                                <div class="form-row">
-                                    <label for="homeworkTitle">Títol</label>
-                                    <input id="homeworkTitle" name="title" type="text" placeholder="Ex: Exercicis 12">
-                                </div>
-                                <div class="form-row">
-                                    <label for="homeworkSubject">Assignatura</label>
-                                    <input id="homeworkSubject" name="subject" type="text" placeholder="Opcional">
-                                </div>
-                                <div class="form-row">
-                                    <label for="homeworkDate">Data entrega</label>
-                                    <input id="homeworkDate" name="dueDate" type="date">
-                                </div>
-                                <div class="form-row">
-                                    <label for="homeworkDescription">Descripció</label>
-                                    <textarea id="homeworkDescription" name="description" rows="2" placeholder="Comentaris"></textarea>
+                            <form id="form-homework" class="clean-form hidden-panel">
+                                <div class="form-grid">
+                                    <div class="form-field span-2">
+                                        <label for="homeworkTitle">Títol</label>
+                                        <input id="homeworkTitle" name="title" type="text" placeholder="Ex: Exercicis 12">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="homeworkSubject">Assignatura</label>
+                                        <input id="homeworkSubject" name="subject" type="text" placeholder="Opcional">
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="homeworkDate">Data entrega</label>
+                                        <input id="homeworkDate" name="dueDate" type="date">
+                                    </div>
+                                    <div class="form-field span-2">
+                                        <label for="homeworkDescription">Descripció</label>
+                                        <textarea id="homeworkDescription" name="description" rows="2" placeholder="Comentaris"></textarea>
+                                    </div>
                                 </div>
                                 <div class="form-actions">
                                     <button type="submit" class="form-submit-btn">Guardar Deure</button>
@@ -156,27 +187,16 @@
                                 </div>
                             </form>
                             <div id="homeworksList" class="list-card">Cap deure creat.</div>
-                        </div>
-                        <div id="excursionDetail" class="detail-card hidden-panel">
-                            <div class="detail-header">
-                                <h4 id="excursionDetailTitle"></h4>
-                                <button type="button" class="form-cancel-btn" onclick="closeExcursionDetail()">Tancar</button>
-                            </div>
-                            <div class="detail-table">
-                                <table>
-                                    <tbody id="excursionStatusTableBody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div id="homeworkDetail" class="detail-card hidden-panel">
-                            <div class="detail-header">
-                                <h4 id="homeworkDetailTitle"></h4>
-                                <button type="button" class="form-cancel-btn" onclick="closeHomeworkDetail()">Tancar</button>
-                            </div>
-                            <div class="detail-table">
-                                <table>
-                                    <tbody id="homeworkStatusTableBody"></tbody>
-                                </table>
+                            <div id="homeworkDetail" class="detail-card hidden-panel">
+                                <div class="detail-header">
+                                    <h4 id="homeworkDetailTitle"></h4>
+                                    <button type="button" class="form-cancel-btn" onclick="closeHomeworkDetail()">Tancar</button>
+                                </div>
+                                <div class="detail-table">
+                                    <table>
+                                        <tbody id="homeworkStatusTableBody"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -194,94 +214,102 @@
                         </div>
                     </div>
                     <div class="panel-body">
+                        <div class="students-panel-card">
                         <div class="student-toolbar">
+                            <div class="student-filter">
+                                <label for="classSelectorStudents">Classe</label>
+                                <select id="classSelectorStudents">
+                                    <option value="">Selecciona una classe</option>
+                                </select>
+                            </div>
                             <button type="button" class="form-submit-btn" id="addStudentBtn">+ Afegir Alumne</button>
                         </div>
-                        <form id="form-student" class="card-form hidden-panel">
-                            <div class="form-grid">
-                                <label>
-                                    <span>Nom *</span>
-                                    <input type="text" name="firstName" placeholder="Nom">
-                                </label>
-                                <label>
-                                    <span>Cognoms *</span>
-                                    <input type="text" name="lastName" placeholder="Cognoms">
-                                </label>
-                                <label>
-                                    <span>Email</span>
-                                    <input type="email" name="email" placeholder="Opcional">
-                                </label>
-                            </div>
-                            <input type="hidden" id="student-class" name="classId">
-                            <div class="form-actions">
-                                <button type="submit" class="form-submit-btn">Guardar Alumne</button>
-                                <button type="button" class="form-cancel-btn" id="cancelStudentForm">Cancel·lar</button>
-                            </div>
-                        </form>
-                        <div class="students-table-container">
-                            <div class="table-search">
-                                <input id="studentSearch" type="text" placeholder="Cercar per nom o cognoms...">
-                            </div>
-                            <table class="students-table">
-                                <thead>
-                                    <tr>
-                                        <th>Nom</th>
-                                        <th>Cognoms</th>
-                                        <th>Email</th>
-                                        <th>Classe</th>
-                                        <th>Mitjana</th>
-                                        <th>Actiu</th>
-                                        <th>Accions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="studentsTableBody">
-                                    <tr class="empty-row">
-                                        <td colspan="7">Selecciona una classe per veure els alumnes</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                          <!-- Secció de Notes integrada -->
-                          <div class="notes-section-wrapper">
-                              <div id="gradesSection" class="grades-section hidden-panel">
-                                  <div class="grade-summary">
-                                      <div>
-                                        <p id="selectedStudentName">Nom alumne</p>
-                                        <p id="selectedStudentClass">Classe del alumne</p>
-                                    </div>
-                                    <div class="grade-average">
-                                        <span>Mitjana:</span>
-                                        <strong id="studentAverage">-</strong>
-                                    </div>
+                            <form id="form-student" class="card-form hidden-panel">
+                                <div class="form-grid">
+                                    <label>
+                                        <span>Nom *</span>
+                                        <input type="text" name="firstName" placeholder="Nom">
+                                    </label>
+                                    <label>
+                                        <span>Cognoms *</span>
+                                        <input type="text" name="lastName" placeholder="Cognoms">
+                                    </label>
+                                    <label>
+                                        <span>Email</span>
+                                        <input type="email" name="email" placeholder="Opcional">
+                                    </label>
                                 </div>
-                                <form id="form-note" class="grade-form">
-                                    <div class="grade-row">
-                                        <label for="grade-value">Qualificació *</label>
-                                        <input id="grade-value" name="value" type="text" placeholder="0-10">
-                                    </div>
-                                    <div class="grade-row">
-                                        <label for="grade-type">Tipus d'avaluació</label>
-                                        <select id="grade-type" name="type">
-                                            <option value="">Selecciona...</option>
-                                            <option value="exam">Examen (80%)</option>
-                                            <option value="homework">Deure (10%)</option>
-                                            <option value="activity">Activitat (10%)</option>
-                                        </select>
-                                    </div>
-                                    <div class="grade-row">
-                                        <label for="grade-date">Data</label>
-                                        <input id="grade-date" name="date" type="date">
-                                    </div>
-                                    <div class="form-actions">
-                                        <button type="submit" class="form-submit-btn">Guardar Nota</button>
-                                        <button type="button" class="form-cancel-btn" id="cancelGradeEditBtn">Cancelar</button>
-                                    </div>
-                                </form>
-                                <div id="notesList" class="notes-list">No hi ha notes seleccionades.</div>
-                                <div id="notesHistory" class="notes-history hidden-panel"></div>
+                                <input type="hidden" id="student-class" name="classId">
+                                <div class="form-actions">
+                                    <button type="submit" class="form-submit-btn">Guardar Alumne</button>
+                                    <button type="button" class="form-cancel-btn" id="cancelStudentForm">Cancel·lar</button>
+                                </div>
+                            </form>
+                            <div class="students-table-container">
+                                <div class="table-search">
+                                    <input id="studentSearch" type="text" placeholder="Cercar per nom o cognoms...">
+                                </div>
+                                <table class="students-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nom</th>
+                                            <th>Cognoms</th>
+                                            <th>Email</th>
+                                            <th>Classe</th>
+                                            <th>Mitjana</th>
+                                            <th>Actiu</th>
+                                            <th>Accions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="studentsTableBody">
+                                        <tr class="empty-row">
+                                            <td colspan="7">Selecciona una classe per veure els alumnes</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
+
+                            <!-- Secció de Notes integrada -->
+                            <div class="notes-section-wrapper">
+                                <div id="gradesSection" class="grades-section hidden-panel">
+                                    <div class="grade-summary">
+                                        <div>
+                                          <p id="selectedStudentName">Nom alumne</p>
+                                          <p id="selectedStudentClass">Classe del alumne</p>
+                                      </div>
+                                      <div class="grade-average">
+                                          <span>Mitjana:</span>
+                                          <strong id="studentAverage">-</strong>
+                                      </div>
+                                  </div>
+                                  <form id="form-note" class="grade-form">
+                                      <div class="grade-row">
+                                          <label for="grade-value">Qualificació *</label>
+                                          <input id="grade-value" name="value" type="text" placeholder="0-10">
+                                      </div>
+                                      <div class="grade-row">
+                                          <label for="grade-type">Tipus d'avaluació</label>
+                                          <select id="grade-type" name="type">
+                                              <option value="">Selecciona...</option>
+                                              <option value="exam">Examen (80%)</option>
+                                              <option value="homework">Deure (10%)</option>
+                                              <option value="activity">Activitat (10%)</option>
+                                          </select>
+                                      </div>
+                                      <div class="grade-row">
+                                          <label for="grade-date">Data</label>
+                                          <input id="grade-date" name="date" type="date">
+                                      </div>
+                                      <div class="form-actions">
+                                          <button type="submit" class="form-submit-btn">Guardar Nota</button>
+                                          <button type="button" class="form-cancel-btn" id="cancelGradeEditBtn">Cancelar</button>
+                                      </div>
+                                  </form>
+                                  <div id="notesList" class="notes-list">No hi ha notes seleccionades.</div>
+                                  <div id="notesHistory" class="notes-history hidden-panel"></div>
+                              </div>
+                          </div>
+                      </div>
                     </div>
                 </div>
 

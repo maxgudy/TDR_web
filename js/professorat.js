@@ -19,7 +19,8 @@ const ProfessoratState = {
     grades: [], // Notes d'avaluació (qualificacions)
     excursions: [],
     homeworks: [],
-    editingGradeId: null
+    editingGradeId: null,
+    editingExcursionId: null
 };
 
 let studentSearchWrapperElement = null;
@@ -182,6 +183,11 @@ function setupSubtabs() {
                     subpanel.classList.add('active');
                 }
             });
+
+            const excursionDetail = document.getElementById('excursionDetail');
+            const homeworkDetail = document.getElementById('homeworkDetail');
+            if (excursionDetail) excursionDetail.style.display = 'none';
+            if (homeworkDetail) homeworkDetail.style.display = 'none';
             
             // Restaurar posició de scroll immediatament
             window.scrollTo(0, currentScrollY);
@@ -336,6 +342,7 @@ function setupEventListeners() {
             if (formExcursion) {
                 formExcursion.style.display = 'none';
                 formExcursion.reset();
+                setExcursionFormMode(false);
             }
         });
     }
@@ -595,89 +602,116 @@ function hidePanel(panel) {
 }
 
 function setupUiFallbacks() {
+    const attachOnce = (element, key, eventName, handler) => {
+        if (!element) return;
+        if (element.dataset[key]) return;
+        element.dataset[key] = 'true';
+        element.addEventListener(eventName, handler);
+    };
+
+    const classSelector = document.getElementById('classSelector');
+    const classSelectorStudents = document.getElementById('classSelectorStudents');
+    const deleteClassBtn = document.getElementById('deleteClassBtn');
+
+    const handleClassChange = (value) => {
+        ProfessoratState.selectedClassId = value || null;
+        if (ProfessoratState.selectedClassId) {
+            localStorage.setItem('selectedClassId', ProfessoratState.selectedClassId);
+        } else {
+            localStorage.removeItem('selectedClassId');
+        }
+        if (deleteClassBtn) {
+            deleteClassBtn.style.display = ProfessoratState.selectedClassId ? 'inline-block' : 'none';
+        }
+        if (classSelector && classSelector.value !== ProfessoratState.selectedClassId) {
+            classSelector.value = ProfessoratState.selectedClassId || '';
+        }
+        if (classSelectorStudents && classSelectorStudents.value !== ProfessoratState.selectedClassId) {
+            classSelectorStudents.value = ProfessoratState.selectedClassId || '';
+        }
+    };
+
+    attachOnce(classSelector, 'fallbackListener', 'change', (e) => {
+        handleClassChange(e.target.value);
+    });
+    attachOnce(classSelectorStudents, 'fallbackListener', 'change', (e) => {
+        handleClassChange(e.target.value);
+    });
+
     const createClassBtn = document.getElementById('createClassBtn');
     const createClassModal = document.getElementById('createClassModal');
     const createClassForm = document.getElementById('createClassForm');
 
-    if (createClassBtn) {
-        createClassBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            showCreateClassDialog();
-        });
-    }
+    attachOnce(createClassBtn, 'fallbackListener', 'click', (e) => {
+        e.preventDefault();
+        showCreateClassDialog();
+    });
 
-    if (createClassModal) {
-        createClassModal.addEventListener('click', (e) => {
-            if (e.target === createClassModal) {
-                closeCreateClassModal();
-            }
-        });
-    }
+    attachOnce(createClassModal, 'fallbackListener', 'click', (e) => {
+        if (e.target === createClassModal) {
+            closeCreateClassModal();
+        }
+    });
 
-    if (createClassForm) {
-        createClassForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-        });
-    }
+    attachOnce(createClassForm, 'fallbackListener', 'submit', (e) => {
+        e.preventDefault();
+    });
 
     const addStudentBtn = document.getElementById('addStudentBtn');
     const cancelStudentForm = document.getElementById('cancelStudentForm');
     const formStudent = document.getElementById('form-student');
 
-    if (addStudentBtn) {
-        addStudentBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            showPanel(formStudent);
-            setStudentSearchVisibility(false);
-        });
-    }
+    attachOnce(addStudentBtn, 'fallbackListener', 'click', (e) => {
+        e.preventDefault();
+        showPanel(formStudent);
+        setStudentSearchVisibility(false);
+    });
 
-    if (cancelStudentForm) {
-        cancelStudentForm.addEventListener('click', (e) => {
-            e.preventDefault();
-            hidePanel(formStudent);
-            if (formStudent) formStudent.reset();
-            setStudentSearchVisibility(true);
-        });
-    }
+    attachOnce(cancelStudentForm, 'fallbackListener', 'click', (e) => {
+        e.preventDefault();
+        hidePanel(formStudent);
+        if (formStudent) formStudent.reset();
+        setStudentSearchVisibility(true);
+    });
 
     const createExcursionBtn = document.getElementById('createExcursionBtn');
     const cancelExcursionForm = document.getElementById('cancelExcursionForm');
     const formExcursion = document.getElementById('form-excursion');
 
-    if (createExcursionBtn) {
-        createExcursionBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            showPanel(formExcursion);
-        });
-    }
+    attachOnce(createExcursionBtn, 'fallbackListener', 'click', (e) => {
+        e.preventDefault();
+        showPanel(formExcursion);
+    });
 
-    if (cancelExcursionForm) {
-        cancelExcursionForm.addEventListener('click', (e) => {
-            e.preventDefault();
-            hidePanel(formExcursion);
-            if (formExcursion) formExcursion.reset();
-        });
-    }
+    attachOnce(cancelExcursionForm, 'fallbackListener', 'click', (e) => {
+        e.preventDefault();
+        hidePanel(formExcursion);
+        if (formExcursion) formExcursion.reset();
+        setExcursionFormMode(false);
+    });
+
+    attachOnce(formExcursion, 'fallbackListener', 'submit', (e) => {
+        handleCreateExcursion(e);
+    });
 
     const createHomeworkBtn = document.getElementById('createHomeworkBtn');
     const cancelHomeworkForm = document.getElementById('cancelHomeworkForm');
     const formHomework = document.getElementById('form-homework');
 
-    if (createHomeworkBtn) {
-        createHomeworkBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            showPanel(formHomework);
-        });
-    }
+    attachOnce(createHomeworkBtn, 'fallbackListener', 'click', (e) => {
+        e.preventDefault();
+        showPanel(formHomework);
+    });
 
-    if (cancelHomeworkForm) {
-        cancelHomeworkForm.addEventListener('click', (e) => {
-            e.preventDefault();
-            hidePanel(formHomework);
-            if (formHomework) formHomework.reset();
-        });
-    }
+    attachOnce(cancelHomeworkForm, 'fallbackListener', 'click', (e) => {
+        e.preventDefault();
+        hidePanel(formHomework);
+        if (formHomework) formHomework.reset();
+    });
+
+    attachOnce(formHomework, 'fallbackListener', 'submit', (e) => {
+        handleCreateHomework(e);
+    });
 }
 
 // Configurar formulari de crear classe
@@ -1505,11 +1539,27 @@ async function handleCreateExcursion(e) {
     console.log('[Professorat] Dades excursió:', excursionData);
     
     try {
-        const { data: excursion, error: excursionError } = await supabaseClient
-            .from('excursions')
-            .insert([excursionData])
-            .select()
-            .single();
+        let excursion = null;
+        let excursionError = null;
+
+        if (ProfessoratState.editingExcursionId) {
+            ({ data: excursion, error: excursionError } = await supabaseClient
+                .from('excursions')
+                .update({
+                    title: excursionData.title,
+                    date: excursionData.date,
+                    price: excursionData.price
+                })
+                .eq('id', ProfessoratState.editingExcursionId)
+                .select()
+                .single());
+        } else {
+            ({ data: excursion, error: excursionError } = await supabaseClient
+                .from('excursions')
+                .insert([excursionData])
+                .select()
+                .single());
+        }
         
         if (excursionError) {
             console.error('[Professorat] Error creant excursió:', excursionError);
@@ -1517,31 +1567,34 @@ async function handleCreateExcursion(e) {
             return false;
         }
         
-        console.log('[Professorat] Excursió creada:', excursion);
-        
-        // Crear status per a tots els alumnes de la classe
-        const { data: students } = await supabaseClient
-            .from('students')
-            .select('id')
-            .eq('class_id', ProfessoratState.selectedClassId)
-            .eq('is_active', true);
-        
-        if (students && students.length > 0) {
-            const statusRecords = students.map(s => ({
-                excursion_id: excursion.id,
-                student_id: s.id,
-                attends: false,
-                paid: false
-            }));
+        console.log('[Professorat] Excursió guardada:', excursion);
+
+        if (!ProfessoratState.editingExcursionId) {
+            // Crear status per a tots els alumnes de la classe
+            const { data: students } = await supabaseClient
+                .from('students')
+                .select('id')
+                .eq('class_id', ProfessoratState.selectedClassId)
+                .eq('is_active', true);
             
-            await supabaseClient
-                .from('excursion_status')
-                .insert(statusRecords);
+            if (students && students.length > 0) {
+                const statusRecords = students.map(s => ({
+                    excursion_id: excursion.id,
+                    student_id: s.id,
+                    attends: false,
+                    paid: false
+                }));
+                
+                await supabaseClient
+                    .from('excursion_status')
+                    .insert(statusRecords);
+            }
         }
         
-        showFeedback('success', 'Excursió creada correctament');
+        showFeedback('success', ProfessoratState.editingExcursionId ? 'Excursió actualitzada' : 'Excursió creada correctament');
         e.target.reset();
         e.target.style.display = 'none';
+        setExcursionFormMode(false);
         await loadExcursions(ProfessoratState.selectedClassId);
     } catch (error) {
         console.error('[Professorat] Excepció creant excursió:', error);
@@ -1561,9 +1614,16 @@ function updateExcursionsList() {
     }
     
     list.innerHTML = ProfessoratState.excursions.map(exc => `
-        <div class="excursion-item" onclick="loadExcursionDetail('${exc.id}')">
-            <h4>${escapeHtml(exc.title)}</h4>
-            <p>Data: ${formatDate(exc.date)} ${exc.price ? `- Preu: ${exc.price}€` : ''}</p>
+        <div class="excursion-item">
+            <div class="excursion-info">
+                <h4>${escapeHtml(exc.title)}</h4>
+                <p>Data: ${formatDate(exc.date)} ${exc.price ? `- Preu: ${exc.price}€` : ''}</p>
+            </div>
+            <div class="excursion-actions">
+                <button type="button" class="detail-action-btn" onclick="openExcursionAttendance('${exc.id}')">Gestionar assistència</button>
+                <button type="button" class="detail-action-btn" onclick="openExcursionEdit('${exc.id}')">Editar</button>
+                <button type="button" class="detail-action-btn" onclick="deleteExcursion('${exc.id}')">Eliminar</button>
+            </div>
         </div>
     `).join('');
 }
@@ -1573,10 +1633,70 @@ function clearExcursionsList() {
     if (list) list.innerHTML = '';
 }
 
+function setExcursionFormMode(isEditing) {
+    const form = document.getElementById('form-excursion');
+    const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+    if (submitBtn) {
+        submitBtn.textContent = isEditing ? 'Guardar canvis' : 'Guardar Excursió';
+    }
+    if (!isEditing) {
+        ProfessoratState.editingExcursionId = null;
+    }
+}
+
+function openExcursionEdit(excursionId) {
+    const excursion = ProfessoratState.excursions.find(exc => exc.id === excursionId);
+    const form = document.getElementById('form-excursion');
+    if (!form || !excursion) return;
+    form.style.display = 'block';
+    form.classList.remove('hidden-panel');
+    document.getElementById('excursionTitle').value = excursion.title || '';
+    document.getElementById('excursionDate').value = excursion.date || '';
+    document.getElementById('excursionPrice').value = excursion.price ?? '';
+    ProfessoratState.editingExcursionId = excursionId;
+    setExcursionFormMode(true);
+}
+
+async function deleteExcursion(excursionId) {
+    if (!confirm('Vols eliminar aquesta excursió?')) return;
+    if (!supabaseClient) {
+        showFeedback('error', 'Client de Supabase no inicialitzat');
+        return;
+    }
+    try {
+        await supabaseClient
+            .from('excursion_status')
+            .delete()
+            .eq('excursion_id', excursionId);
+        const { error } = await supabaseClient
+            .from('excursions')
+            .delete()
+            .eq('id', excursionId);
+        if (error) {
+            showFeedback('error', `Error eliminant excursió: ${error.message}`);
+            return;
+        }
+        if (ProfessoratState.selectedExcursionId === excursionId) {
+            closeExcursionDetail();
+        }
+        await loadExcursions(ProfessoratState.selectedClassId);
+        showFeedback('success', 'Excursió eliminada');
+    } catch (error) {
+        console.error('[Professorat] Excepció eliminant excursió:', error);
+        showFeedback('error', 'Error de connexió amb Supabase');
+    }
+}
+
+function openExcursionAttendance(excursionId) {
+    loadExcursionDetail(excursionId);
+}
+
 async function loadExcursionDetail(excursionId) {
     if (!supabaseClient) return;
     
     ProfessoratState.selectedExcursionId = excursionId;
+    const homeworkDetail = document.getElementById('homeworkDetail');
+    if (homeworkDetail) homeworkDetail.style.display = 'none';
     
     try {
         // Carregar excursió
@@ -1621,6 +1741,19 @@ async function loadExcursionDetail(excursionId) {
         }
         
         document.getElementById('excursionDetailTitle').textContent = excursion.title;
+        const meta = document.getElementById('excursionDetailMeta');
+        if (meta) {
+            const priceText = excursion.price ? ` - Preu: ${excursion.price}€` : '';
+            meta.textContent = `Data: ${formatDate(excursion.date)}${priceText}`;
+        }
+        const editBtn = document.getElementById('excursionEditBtn');
+        const deleteBtn = document.getElementById('excursionDeleteBtn');
+        if (editBtn) {
+            editBtn.onclick = () => openExcursionEdit(excursionId);
+        }
+        if (deleteBtn) {
+            deleteBtn.onclick = () => deleteExcursion(excursionId);
+        }
         document.getElementById('excursionDetail').style.display = 'block';
         
         const tbody = document.getElementById('excursionStatusTableBody');
@@ -1631,14 +1764,16 @@ async function loadExcursionDetail(excursionId) {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${escapeHtml(student.first_name)} ${escapeHtml(student.last_name)}</td>
-                <td>
-                    <input type="checkbox" ${status.attends ? 'checked' : ''} 
-                           onchange="updateExcursionStatus('${excursionId}', '${student.id}', 'attends', this.checked)">
-                </td>
-                <td>
-                    <input type="checkbox" ${status.paid ? 'checked' : ''} 
-                           onchange="updateExcursionStatus('${excursionId}', '${student.id}', 'paid', this.checked)">
-                </td>
+                  <td>
+                      <input type="checkbox" ${status.attends ? 'checked' : ''} 
+                             aria-label="Ve"
+                             onchange="updateExcursionStatus('${excursionId}', '${student.id}', 'attends', this.checked)">
+                  </td>
+                  <td>
+                      <input type="checkbox" ${status.paid ? 'checked' : ''} 
+                             aria-label="Pagat"
+                             onchange="updateExcursionStatus('${excursionId}', '${student.id}', 'paid', this.checked)">
+                  </td>
                 <td>
                     <input type="text" value="${escapeHtml(status.comment || '')}" 
                            placeholder="Comentari..." 
@@ -1816,6 +1951,8 @@ async function loadHomeworkDetail(homeworkId) {
     if (!supabaseClient) return;
     
     ProfessoratState.selectedHomeworkId = homeworkId;
+    const excursionDetail = document.getElementById('excursionDetail');
+    if (excursionDetail) excursionDetail.style.display = 'none';
     
     try {
         // Carregar deure
@@ -2193,6 +2330,9 @@ window.editStudent = editStudent;
 window.deleteStudent = deleteStudent;
 window.toggleStudentActive = toggleStudentActive;
 window.loadExcursionDetail = loadExcursionDetail;
+window.openExcursionAttendance = openExcursionAttendance;
+window.openExcursionEdit = openExcursionEdit;
+window.deleteExcursion = deleteExcursion;
 window.updateExcursionStatus = updateExcursionStatus;
 window.loadHomeworkDetail = loadHomeworkDetail;
 window.updateHomeworkStatus = updateHomeworkStatus;

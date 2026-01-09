@@ -1145,6 +1145,11 @@ body.dark-mode .suggestion-text {
     flex-direction: column;
     gap: 24px;
     padding-bottom: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .form-feedback {
@@ -1344,7 +1349,7 @@ body.dark-mode select option {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     padding-top: 16px;
     display: none;
-    gap: 12px;
+    gap: 20px;
 }
 
 .registre-subpanel.active {
@@ -1362,35 +1367,107 @@ body.dark-mode select option {
 .small-form {
     background: rgba(0, 0, 0, 0.35);
     border-radius: 12px;
-    padding: 14px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
     width: 100%;
-    max-width: 520px;
+    max-width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-sizing: border-box;
 }
 
 .small-form .form-row {
     display: grid;
-    grid-template-columns: 120px minmax(180px, 320px);
+    grid-template-columns: 90px 1fr;
     align-items: center;
-    column-gap: 12px;
-    row-gap: 10px;
+    column-gap: 8px;
+    row-gap: 16px;
 }
 
 .small-form .form-row input,
 .small-form .form-row textarea,
 .small-form .form-row select {
-    min-height: 32px;
-    padding: 6px 10px;
-    font-size: 13px;
-    border-radius: 8px;
+    min-height: 34px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 10px;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.small-form .form-row + .form-row {
+    margin-top: 6px;
+}
+
+.clean-form {
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 14px;
+    padding: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 18px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-field label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+    min-height: 36px;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.05);
+    color: #f1f1f1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-field textarea {
+    min-height: 72px;
+}
+
+.form-field.span-2 {
+    grid-column: span 2;
 }
 
 .small-form .form-actions {
-    gap: 8px;
+    gap: 12px;
     flex-wrap: wrap;
+    margin-top: 4px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.clean-form .form-actions {
+    margin-top: 12px;
+    gap: 10px;
+    display: flex;
+}
+
+.list-card {
     margin-top: 6px;
 }
 
@@ -1407,6 +1484,48 @@ body.dark-mode select option {
     color: rgba(255, 255, 255, 0.8);
 }
 
+.excursion-item,
+.homework-item {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+    cursor: default;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.homework-item {
+    cursor: pointer;
+}
+
+.excursion-item + .excursion-item,
+.homework-item + .homework-item {
+    margin-top: 10px;
+}
+
+.excursion-item:hover,
+.homework-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+.excursion-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.excursion-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
 .detail-card {
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1418,6 +1537,44 @@ body.dark-mode select option {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
+}
+
+.detail-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-meta {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.detail-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.detail-action-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.detail-action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .detail-table table {
@@ -1427,29 +1584,98 @@ body.dark-mode select option {
     color: #f5f5f5;
 }
 
+.detail-table thead th {
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 8px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-table tbody td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    vertical-align: middle;
+}
+
+.detail-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
 .student-toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 12px;
+    gap: 16px;
+}
+
+.students-panel-card {
+    background: transparent;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.card-form {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 16px;
+}
+
+.card-form .form-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px 16px;
+}
+
+.card-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.card-form label span {
+    font-weight: 500;
+}
+
+.card-form input {
+    background: rgba(255, 255, 255, 0.06);
+    color: #f1f1f1;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.card-form .form-actions {
+    margin-top: 12px;
 }
 
 .students-table-container {
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.22);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 18px;
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
 .notes-section-wrapper {
-    margin-top: 32px;
-    padding-top: 32px;
-    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    margin-top: 10px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
 }
 
 .students-table {
@@ -1483,10 +1709,26 @@ body.dark-mode select option {
 .grade-form {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
-    background: rgba(255, 255, 255, 0.04);
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.03);
     border-radius: 12px;
-    padding: 16px;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.student-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.student-filter label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.student-filter select {
+    min-width: 220px;
 }
 
 .grade-row {
@@ -1639,11 +1881,16 @@ body.dark-mode select option {
     background: #5f8bff;
     border: none;
     color: #fff;
-    padding: 10px 20px;
+    padding: 6px 16px;
     border-radius: 999px;
     cursor: pointer;
     font-weight: 600;
     transition: background 0.2s ease;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
 }
 
 .form-submit-btn:hover {
@@ -1654,10 +1901,15 @@ body.dark-mode select option {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
     color: #fff;
-    padding: 10px 20px;
+    padding: 6px 16px;
     border-radius: 999px;
     cursor: pointer;
     font-weight: 500;
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
 }
 
 .modal-overlay {
