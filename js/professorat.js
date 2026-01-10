@@ -23,6 +23,8 @@ const ProfessoratState = {
     editingExcursionId: null
 };
 
+let studentsRenderToken = 0;
+
 let studentSearchWrapperElement = null;
 let pendingDeleteClassId = null;
 
@@ -36,7 +38,14 @@ function setStudentSearchVisibility(isVisible) {
 }
 
 function openDeleteClassModal() {
-    if (!ProfessoratState.selectedClassId) return;
+    if (!ProfessoratState.selectedClassId) {
+        const selector = document.getElementById('classSelector');
+        ProfessoratState.selectedClassId = selector ? selector.value : null;
+    }
+    if (!ProfessoratState.selectedClassId) {
+        showFeedback('error', 'Selecciona una classe abans d\'eliminar-la');
+        return;
+    }
     pendingDeleteClassId = ProfessoratState.selectedClassId;
     const nameEl = document.getElementById('deleteClassName');
     if (nameEl) {
@@ -206,10 +215,12 @@ function setupEventListeners() {
     
     // Selector de classe (a pestanya Classes)
     const classSelector = document.getElementById('classSelector');
+    const classSelectorStudents = document.getElementById('classSelectorStudents');
     const deleteClassBtn = document.getElementById('deleteClassBtn');
     
     console.log('[Professorat] Elements trobats:', {
         classSelector: !!classSelector,
+        classSelectorStudents: !!classSelectorStudents,
         deleteClassBtn: !!deleteClassBtn
     });
     
@@ -235,9 +246,33 @@ function setupEventListeners() {
                 loadHomeworks(ProfessoratState.selectedClassId);
                 // Carregar dades per a la pestanya Alumnes
                 loadStudents(ProfessoratState.selectedClassId);
+                const studentClassSelect = document.getElementById('student-class');
+                if (studentClassSelect) {
+                    studentClassSelect.value = ProfessoratState.selectedClassId;
+                }
             } else {
                 clearExcursionsList();
                 clearHomeworksList();
+                clearStudentsTable();
+            }
+        });
+    }
+
+    if (classSelectorStudents) {
+        classSelectorStudents.addEventListener('change', (e) => {
+            ProfessoratState.selectedClassId = e.target.value || null;
+            if (ProfessoratState.selectedClassId) {
+                localStorage.setItem('selectedClassId', ProfessoratState.selectedClassId);
+            } else {
+                localStorage.removeItem('selectedClassId');
+            }
+            const studentClassSelect = document.getElementById('student-class');
+            if (studentClassSelect) {
+                studentClassSelect.value = ProfessoratState.selectedClassId || '';
+            }
+            if (ProfessoratState.selectedClassId) {
+                loadStudents(ProfessoratState.selectedClassId);
+            } else {
                 clearStudentsTable();
             }
         });
@@ -283,7 +318,8 @@ function setupEventListeners() {
                 formStudent.style.display = 'block';
                 setStudentSearchVisibility(false);
                 if (studentClassSelect) {
-                    studentClassSelect.value = ProfessoratState.selectedClassId || '';
+                    const selector = document.getElementById('classSelectorStudents');
+                    studentClassSelect.value = (selector && selector.value) || ProfessoratState.selectedClassId || '';
                 }
                 console.log('[Professorat] Formulari alumne mostrat');
             }
@@ -299,19 +335,32 @@ function setupEventListeners() {
         });
     }
     if (formStudent) {
-        formStudent.addEventListener('submit', handleCreateStudent);
+        if (!formStudent.dataset.listenerBound) {
+            formStudent.addEventListener('submit', handleCreateStudent);
+            formStudent.dataset.listenerBound = 'true';
+        }
     }
     
     // Formulari notes d'avaluació
     const formNote = document.getElementById('form-note');
     if (formNote) {
-        formNote.addEventListener('submit', handleCreateGrade);
+        if (!formNote.dataset.listenerBound) {
+            formNote.addEventListener('submit', handleCreateGrade);
+            formNote.dataset.listenerBound = 'true';
+        }
     }
     const cancelGradeEditBtn = document.getElementById('cancelGradeEditBtn');
     if (cancelGradeEditBtn) {
         cancelGradeEditBtn.addEventListener('click', (e) => {
             e.preventDefault();
             exitGradeEditMode();
+        });
+    }
+    const closeGradesSectionBtn = document.getElementById('closeGradesSectionBtn');
+    if (closeGradesSectionBtn) {
+        closeGradesSectionBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeGradesSection();
         });
     }
     
@@ -549,30 +598,40 @@ async function performDeleteClass(classId) {
 }
 
 function updateClassSelector() {
-    const select = document.getElementById('classSelector');
+    const selectors = [
+        document.getElementById('classSelector'),
+        document.getElementById('classSelectorStudents')
+    ].filter(Boolean);
     console.log('[Professorat] Actualitzant selector de classes amb classes:', ProfessoratState.classes);
 
-    if (!select) return;
+    if (selectors.length === 0) return;
 
-    select.innerHTML = '<option value="">Selecciona una classe</option>';
+    selectors.forEach(select => {
+        select.innerHTML = '<option value="">Selecciona una classe</option>';
+    });
 
     if (ProfessoratState.classes && Array.isArray(ProfessoratState.classes) && ProfessoratState.classes.length > 0) {
         ProfessoratState.classes.forEach(cls => {
             if (cls && cls.id && cls.name) {
-                const option = document.createElement('option');
-                option.value = cls.id;
-                option.textContent = cls.name;
-                select.appendChild(option);
+                selectors.forEach(select => {
+                    const option = document.createElement('option');
+                    option.value = cls.id;
+                    option.textContent = cls.name;
+                    select.appendChild(option);
+                });
             } else {
-                console.warn('[Professorat] Classe invàlida:', cls);
+                console.warn('[Professorat] Classe incompleta:', cls);
             }
         });
     }
 
-    select.value = ProfessoratState.selectedClassId || '';
+    selectors.forEach(select => {
+        select.value = ProfessoratState.selectedClassId || '';
+    });
 
     console.log(`[Professorat] Selector actualitzat amb ${ProfessoratState.classes.length} classes`);
 }
+
 function showCreateClassDialog() {
     const modal = document.getElementById('createClassModal');
     if (modal) {
@@ -612,6 +671,7 @@ function setupUiFallbacks() {
     const classSelector = document.getElementById('classSelector');
     const classSelectorStudents = document.getElementById('classSelectorStudents');
     const deleteClassBtn = document.getElementById('deleteClassBtn');
+    const deleteClassConfirmBtn = document.getElementById('deleteClassConfirmBtn');
 
     const handleClassChange = (value) => {
         ProfessoratState.selectedClassId = value || null;
@@ -636,6 +696,16 @@ function setupUiFallbacks() {
     });
     attachOnce(classSelectorStudents, 'fallbackListener', 'change', (e) => {
         handleClassChange(e.target.value);
+    });
+
+    attachOnce(deleteClassBtn, 'fallbackListener', 'click', (e) => {
+        e.preventDefault();
+        openDeleteClassModal();
+    });
+
+    attachOnce(deleteClassConfirmBtn, 'fallbackListener', 'click', (e) => {
+        e.preventDefault();
+        executeDeleteClass();
     });
 
     const createClassBtn = document.getElementById('createClassBtn');
@@ -672,6 +742,10 @@ function setupUiFallbacks() {
         hidePanel(formStudent);
         if (formStudent) formStudent.reset();
         setStudentSearchVisibility(true);
+    });
+
+    attachOnce(formStudent, 'fallbackListener', 'submit', (e) => {
+        handleCreateStudent(e);
     });
 
     const createExcursionBtn = document.getElementById('createExcursionBtn');
@@ -711,6 +785,19 @@ function setupUiFallbacks() {
 
     attachOnce(formHomework, 'fallbackListener', 'submit', (e) => {
         handleCreateHomework(e);
+    });
+
+    const formNote = document.getElementById('form-note');
+    if (!formNote || !formNote.dataset.listenerBound) {
+        attachOnce(formNote, 'fallbackListener', 'submit', (e) => {
+            handleCreateGrade(e);
+        });
+    }
+
+    const closeGradesSectionBtn = document.getElementById('closeGradesSectionBtn');
+    attachOnce(closeGradesSectionBtn, 'fallbackListener', 'click', (e) => {
+        e.preventDefault();
+        closeGradesSection();
     });
 }
 
@@ -764,7 +851,19 @@ async function loadStudents(classId) {
             showFeedback('error', `Error carregant alumnes: ${error.message}`);
             ProfessoratState.students = [];
         } else {
-            ProfessoratState.students = data || [];
+            const rawStudents = data || [];
+            const normalize = (value) => (value || '')
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, ' ');
+            const seen = new Set();
+            ProfessoratState.students = rawStudents.filter(student => {
+                const key = `v:${normalize(student.first_name)}|${normalize(student.last_name)}|${normalize(student.email)}|${student.class_id || ''}`;
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
         }
         
         updateStudentsTable();
@@ -779,11 +878,6 @@ async function loadStudents(classId) {
 async function handleCreateStudent(e) {
     e.preventDefault();
     
-    if (!ProfessoratState.selectedClassId) {
-        showFeedback('error', 'Selecciona una classe primer');
-        return;
-    }
-    
     if (!supabaseClient) {
         showFeedback('error', 'Client de Supabase no inicialitzat');
         return;
@@ -791,12 +885,16 @@ async function handleCreateStudent(e) {
     
     const formData = new FormData(e.target);
     const classIdFromForm = formData.get('classId');
-    const classId = classIdFromForm || ProfessoratState.selectedClassId;
+    const classSelectorStudents = document.getElementById('classSelectorStudents');
+    const classId = classIdFromForm
+        || (classSelectorStudents ? classSelectorStudents.value : '')
+        || ProfessoratState.selectedClassId;
 
     if (!classId) {
         showFeedback('error', 'Selecciona una classe per l\'alumne');
         return;
     }
+    ProfessoratState.selectedClassId = classId;
 
     const studentData = {
         class_id: classId,
@@ -805,6 +903,21 @@ async function handleCreateStudent(e) {
         email: formData.get('email') || null,
         is_active: true
     };
+
+    const normalize = (value) => (value || '').toString().trim().toLowerCase();
+    const newFirst = normalize(studentData.first_name);
+    const newLast = normalize(studentData.last_name);
+    const newEmail = normalize(studentData.email);
+    const duplicate = ProfessoratState.students.some(s => {
+        const existingEmail = normalize(s.email);
+        const sameName = normalize(s.first_name) === newFirst && normalize(s.last_name) === newLast;
+        if (newEmail && existingEmail) return existingEmail === newEmail;
+        return sameName;
+    });
+    if (duplicate) {
+        alert('Aquest alumne ja existeix a la classe seleccionada.');
+        return;
+    }
     
     try {
         const { data, error } = await supabaseClient
@@ -920,6 +1033,7 @@ function updateStudentsTable() {
     const tbody = document.getElementById('studentsTableBody');
     if (!tbody) return;
     
+    const renderToken = ++studentsRenderToken;
     tbody.innerHTML = '';
     
     if (ProfessoratState.students.length === 0) {
@@ -932,12 +1046,13 @@ function updateStudentsTable() {
         // Si no hi ha client, mostrar sense mitjanes
         ProfessoratState.students.forEach(student => {
             const row = document.createElement('tr');
+            row.dataset.studentId = student.id;
             row.innerHTML = `
                 <td>${escapeHtml(student.first_name)}</td>
                 <td>${escapeHtml(student.last_name)}</td>
                 <td>${escapeHtml(student.email || '-')}</td>
                 <td>${escapeHtml(getClassName(student.class_id))}</td>
-                <td>-</td>
+                <td><span class="student-average">-</span></td>
                 <td>
                     <label class="toggle-switch">
                         <input type="checkbox" ${student.is_active ? 'checked' : ''} 
@@ -946,9 +1061,11 @@ function updateStudentsTable() {
                     </label>
                 </td>
                 <td>
-                    <button class="btn-grade" onclick="openGradeForm('${student.id}', '${escapeHtml(student.first_name)}', '${escapeHtml(student.last_name)}', '${escapeHtml(getClassName(student.class_id))}')" title="Afegir nota">📝</button>
-                    <button class="btn-edit" onclick="editStudent('${student.id}')">Editar</button>
-                    <button class="btn-delete" onclick="deleteStudent('${student.id}')">Eliminar</button>
+                    <div class="student-actions">
+                        <button class="btn-grade" onclick="openGradeForm('${student.id}', '${escapeHtml(student.first_name)}', '${escapeHtml(student.last_name)}', '${escapeHtml(getClassName(student.class_id))}')" title="Afegir nota">Afegir nota</button>
+                        <button class="btn-edit" onclick="editStudent('${student.id}')">Editar</button>
+                        <button class="btn-delete" onclick="deleteStudent('${student.id}')">Eliminar</button>
+                    </div>
                 </td>
             `;
             tbody.appendChild(row);
@@ -973,6 +1090,8 @@ function updateStudentsTable() {
             return { studentId, average: '-' };
         }
     })).then(averages => {
+        if (renderToken !== studentsRenderToken) return;
+        tbody.innerHTML = '';
         const avgMap = {};
         averages.forEach(avg => {
             avgMap[avg.studentId] = avg.average;
@@ -980,12 +1099,13 @@ function updateStudentsTable() {
         
         ProfessoratState.students.forEach(student => {
             const row = document.createElement('tr');
+            row.dataset.studentId = student.id;
             row.innerHTML = `
                 <td>${escapeHtml(student.first_name)}</td>
                 <td>${escapeHtml(student.last_name)}</td>
                 <td>${escapeHtml(student.email || '-')}</td>
                 <td>${escapeHtml(getClassName(student.class_id))}</td>
-                <td><strong>${avgMap[student.id] || '-'}</strong></td>
+                <td><span class="student-average">${avgMap[student.id] || '-'}</span></td>
                 <td>
                     <label class="toggle-switch">
                         <input type="checkbox" ${student.is_active ? 'checked' : ''} 
@@ -994,9 +1114,11 @@ function updateStudentsTable() {
                     </label>
                 </td>
                 <td>
-                    <button class="btn-grade" onclick="openGradeForm('${student.id}', '${escapeHtml(student.first_name)}', '${escapeHtml(student.last_name)}', '${escapeHtml(getClassName(student.class_id))}')" title="Afegir nota">📝</button>
-                    <button class="btn-edit" onclick="editStudent('${student.id}')">Editar</button>
-                    <button class="btn-delete" onclick="deleteStudent('${student.id}')">Eliminar</button>
+                    <div class="student-actions">
+                        <button class="btn-grade" onclick="openGradeForm('${student.id}', '${escapeHtml(student.first_name)}', '${escapeHtml(student.last_name)}', '${escapeHtml(getClassName(student.class_id))}')" title="Afegir nota">Afegir nota</button>
+                        <button class="btn-edit" onclick="editStudent('${student.id}')">Editar</button>
+                        <button class="btn-delete" onclick="deleteStudent('${student.id}')">Eliminar</button>
+                    </div>
                 </td>
             `;
             tbody.appendChild(row);
@@ -1138,8 +1260,10 @@ function openGradeForm(studentId, firstName, lastName, className) {
     ProfessoratState.selectedStudentId = studentId;
     const fullName = `${firstName} ${lastName}`;
     
-    document.getElementById('selectedStudentName').textContent = fullName;
-    document.getElementById('selectedStudentClass').textContent = className;
+    const nameEl = document.getElementById('selectedStudentName');
+    const classEl = document.getElementById('selectedStudentClass');
+    if (nameEl) nameEl.textContent = fullName;
+    if (classEl) classEl.textContent = className;
     
     // Mostrar secció de notes
     const gradesSection = document.getElementById('gradesSection');
@@ -1148,11 +1272,20 @@ function openGradeForm(studentId, firstName, lastName, className) {
         // Scroll suau fins a la secció
         gradesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+
     
     // Carregar notes d'avaluació i calcular mitjana
     loadGrades(studentId).then(() => {
         calculateAndDisplayAverage(studentId);
     });
+}
+
+function closeGradesSection() {
+    const gradesSection = document.getElementById('gradesSection');
+    if (gradesSection) {
+        gradesSection.style.display = 'none';
+    }
+    ProfessoratState.selectedStudentId = null;
 }
 
 async function selectStudentForNotes(studentId, studentName, className) {
@@ -1366,19 +1499,31 @@ async function calculateAndDisplayAverage(studentId) {
             console.error('[Professorat] Error carregant notes per mitjana:', error);
             // Utilitzar notes ja carregades
             const average = calculateWeightedAverage(ProfessoratState.grades);
-            document.getElementById('studentAverage').textContent = average !== null ? average.toFixed(2) : '-';
+            const formatted = average !== null ? average.toFixed(2) : '-';
+            document.getElementById('studentAverage').textContent = formatted;
+            updateStudentAverageCell(studentId, formatted);
             return;
         }
         
         // Calcular mitjana ponderada
         const average = calculateWeightedAverage(grades || []);
-        document.getElementById('studentAverage').textContent = average !== null ? average.toFixed(2) : '-';
+        const formatted = average !== null ? average.toFixed(2) : '-';
+        document.getElementById('studentAverage').textContent = formatted;
+        updateStudentAverageCell(studentId, formatted);
     } catch (error) {
         console.error('[Professorat] Error calculant mitjana:', error);
         // Calcular amb les notes ja carregades
         const average = calculateWeightedAverage(ProfessoratState.grades);
-        document.getElementById('studentAverage').textContent = average !== null ? average.toFixed(2) : '-';
+        const formatted = average !== null ? average.toFixed(2) : '-';
+        document.getElementById('studentAverage').textContent = formatted;
+        updateStudentAverageCell(studentId, formatted);
     }
+}
+
+function updateStudentAverageCell(studentId, value) {
+    if (!studentId) return;
+    const cell = document.querySelector(`#studentsTableBody tr[data-student-id="${studentId}"] .student-average`);
+    if (cell) cell.textContent = value;
 }
 
 async function handleCreateGrade(e) {
@@ -1404,12 +1549,13 @@ async function handleCreateGrade(e) {
         return;
     }
 
-    const gradeData = {
-        student_id: ProfessoratState.selectedStudentId,
-        value: numericValue,
-        type: formData.get('type'),
-        date: formData.get('date')
-    };
+      const rawDate = (formData.get('date') || '').toString().trim();
+      const gradeData = {
+          student_id: ProfessoratState.selectedStudentId,
+          value: numericValue,
+          type: formData.get('type'),
+          date: rawDate ? rawDate : null
+      };
     
     if (ProfessoratState.editingGradeId) {
         await updateGrade(ProfessoratState.editingGradeId, gradeData);
@@ -1445,44 +1591,44 @@ async function handleCreateGrade(e) {
 }
 
 function updateGradesHistory() {
-    const notesList = document.getElementById('notesList');
-    const notesHistory = document.getElementById('notesHistory');
-    
-    if (!notesList || !notesHistory) return;
-    
-    if (!ProfessoratState.grades || ProfessoratState.grades.length === 0) {
-        notesList.innerHTML = '<p>No hi ha notes d\'avaluació per aquest alumne</p>';
-        notesHistory.style.display = 'block';
+        const notesHistory = document.getElementById('notesHistory');
+        
+        if (!notesHistory) return;
+        
+        if (!ProfessoratState.grades || ProfessoratState.grades.length === 0) {
+        notesHistory.innerHTML = '<p>No hi ha notes d\'avaluació per aquest alumne</p>';
     } else {
-        notesList.innerHTML = ProfessoratState.grades.map(grade => {
+        notesHistory.innerHTML = ProfessoratState.grades.map(grade => {
             const typeLabels = {
                 exam: 'Examen (80%)',
                 homework: 'Deure (10%)',
                 activity: 'Activitat (10%)'
             };
             const typeLabel = typeLabels[grade.type] || grade.type;
-            const date = new Date(grade.date).toLocaleDateString('ca-ES');
+            const date = grade.date ? new Date(grade.date).toLocaleDateString('ca-ES') : 'Sense data';
             const value = parseFloat(grade.value).toFixed(2);
-            
+
             return `
             <div class="grade-item">
                 <div class="grade-header">
                     <div class="grade-value">${value}</div>
+                    <div class="grade-actions">
+                        <button type="button" class="grade-action" onclick="prepareGradeEdit('${grade.id}')">Editar</button>
+                        <button type="button" class="grade-action" onclick="deleteGrade('${grade.id}')">Eliminar</button>
+                    </div>
                     <div class="grade-info">
                         <strong>${typeLabel}</strong>
                         <span class="grade-date">${date}</span>
                     </div>
                 </div>
-                <div class="grade-actions">
-                    <button type="button" class="grade-action" onclick="prepareGradeEdit('${grade.id}')">Editar</button>
-                    <button type="button" class="grade-action" onclick="deleteGrade('${grade.id}')">Eliminar</button>
-                </div>
             </div>
             `;
         }).join('');
-        notesHistory.style.display = 'block';
     }
 }
+
+
+
 
 // ========== GESTIÓ D'EXCURSIONS ==========
 
@@ -2110,6 +2256,7 @@ function getClassName(classId) {
 }
 
 function showFeedback(type, message, duration = 5000) {
+    return;
     const feedback = document.getElementById('formFeedback-gpt');
     if (!feedback) return;
     
@@ -2346,6 +2493,7 @@ window.prepareGradeEdit = prepareGradeEdit;
 window.deleteGrade = deleteGrade;
 window.handleGlobalStudentSearch = handleGlobalStudentSearch;
 window.performStudentSearch = performStudentSearch;
+window.closeGradesSection = closeGradesSection;
 
 // Variable per evitar inicialitzacions múltiples
 let isInitialized = false;

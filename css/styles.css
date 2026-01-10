@@ -1153,11 +1153,12 @@ body.dark-mode .suggestion-text {
 }
 
 .form-feedback {
-    min-height: 40px;
-    padding: 10px 16px;
-    border-radius: 10px;
+    display: none;
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
     font-weight: 500;
-    transition: transform 0.15s ease, opacity 0.3s ease;
+    transition: none;
     opacity: 0;
     visibility: hidden;
 }
@@ -1615,18 +1616,18 @@ body.dark-mode select option {
 .students-panel-card {
     background: transparent;
     border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 20px;
+    border: none;
+    padding: 0;
     display: flex;
     flex-direction: column;
     gap: 18px;
 }
 
 .card-form {
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    padding: 16px;
+    background: transparent;
+    border-radius: 0;
+    border: none;
+    padding: 0;
 }
 
 .card-form .form-grid {
@@ -1660,10 +1661,10 @@ body.dark-mode select option {
 }
 
 .students-table-container {
-    background: rgba(0, 0, 0, 0.22);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    padding: 18px;
+    background: transparent;
+    border-radius: 0;
+    border: none;
+    padding: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -1672,7 +1673,7 @@ body.dark-mode select option {
 .notes-section-wrapper {
     margin-top: 10px;
     padding-top: 18px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: none;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -1687,13 +1688,62 @@ body.dark-mode select option {
 
 .students-table th,
 .students-table td {
-    padding: 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px;
+    border-bottom: none;
     text-align: left;
 }
 
 .students-table tbody tr:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.student-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-grade,
+.btn-edit,
+.btn-delete {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #f1f1f1;
+    border-radius: 999px;
+    padding: 3px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    min-height: 24px;
+    line-height: 1;
+}
+
+.btn-history {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #f1f1f1;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    min-height: 28px;
+    line-height: 1;
+}
+
+.btn-grade {
+    background: rgba(95, 139, 255, 0.18);
+    border-color: rgba(95, 139, 255, 0.35);
+}
+
+.btn-delete {
+    background: rgba(255, 99, 132, 0.15);
+    border-color: rgba(255, 99, 132, 0.35);
+}
+
+.btn-grade:hover,
+.btn-history:hover,
+.btn-edit:hover,
+.btn-delete:hover {
+    background: rgba(255, 255, 255, 0.16);
 }
 
 .table-search input {
@@ -1709,11 +1759,17 @@ body.dark-mode select option {
 .grade-form {
     display: flex;
     flex-wrap: wrap;
-    gap: 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
-    padding: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    gap: 4px 6px;
+    background: transparent;
+    border-radius: 0;
+    padding: 0 0 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    align-items: flex-end;
+}
+
+.grades-section .form-actions {
+    width: auto;
+    margin-top: 0;
 }
 
 .student-filter {
@@ -1733,54 +1789,142 @@ body.dark-mode select option {
 
 .grade-row {
     flex: 1;
-    min-width: 180px;
+    min-width: 110px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 2px;
+}
+
+.grade-row label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .grades-section {
     background: rgba(0, 0, 0, 0.35);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 4px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 8px;
 }
 
 .grade-summary {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0;
 }
 
-.grade-summary p {
-    margin: 0;
+.student-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.student-summary strong {
+    font-size: 12px;
+    font-weight: 600;
+    color: #f1f1f1;
+}
+
+.student-summary span {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .grade-average {
-    font-size: 20px;
+    font-size: 11px;
     font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
 }
 
 .notes-list {
     background: rgba(0, 0, 0, 0.15);
     border-radius: 10px;
     padding: 12px;
+    font-size: 13px;
 }
 
 .notes-history {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 4px;
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+.close-section-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.8);
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grades-section .grade-row input,
+.grades-section .grade-row select {
+    min-height: 26px;
+    padding: 1px 6px;
+    font-size: 10px;
+}
+
+.grade-row select,
+.grade-row input {
+    line-height: 1.2;
 }
 
 .grade-item {
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 10px;
-    padding: 10px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    padding: 2px 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.grade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.grade-info {
+    text-align: right;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.grade-header .grade-value {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.grade-actions {
+    margin-top: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.grade-header .grade-value {
+    order: 1;
+}
+
+.grade-header .grade-actions {
+    order: 3;
+}
+
+.grade-header .grade-info {
+    order: 2;
+    margin-left: auto;
 }
 
 .grade-header {
@@ -1790,14 +1934,14 @@ body.dark-mode select option {
 }
 
 .grade-value {
-    font-size: 24px;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .grade-actions {
-    margin-top: 8px;
+    margin-top: 1px;
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .grade-action {
@@ -1805,8 +1949,10 @@ body.dark-mode select option {
     border: 1px solid rgba(255, 255, 255, 0.4);
     color: #f1f1f1;
     border-radius: 6px;
-    padding: 4px 8px;
+    padding: 4px 10px;
     cursor: pointer;
+    font-size: 14px;
+    min-height: 28px;
 }
 
 .global-search {

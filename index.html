@@ -273,20 +273,13 @@
                             <div class="notes-section-wrapper">
                                 <div id="gradesSection" class="grades-section hidden-panel">
                                     <div class="grade-summary">
-                                        <div>
-                                          <p id="selectedStudentName">Nom alumne</p>
-                                          <p id="selectedStudentClass">Classe del alumne</p>
-                                      </div>
-                                      <div class="grade-average">
-                                          <span>Mitjana:</span>
-                                          <strong id="studentAverage">-</strong>
-                                      </div>
+                                    <div class="grade-average">
+                                        <span>Mitjana:</span>
+                                        <strong id="studentAverage">-</strong>
+                                    </div>
+                                    <button type="button" class="close-section-btn" id="closeGradesSectionBtn">×</button>
                                   </div>
                                   <form id="form-note" class="grade-form">
-                                      <div class="grade-row">
-                                          <label for="grade-value">Qualificació *</label>
-                                          <input id="grade-value" name="value" type="text" placeholder="0-10">
-                                      </div>
                                       <div class="grade-row">
                                           <label for="grade-type">Tipus d'avaluació</label>
                                           <select id="grade-type" name="type">
@@ -297,6 +290,10 @@
                                           </select>
                                       </div>
                                       <div class="grade-row">
+                                          <label for="grade-value">Qualificació *</label>
+                                          <input id="grade-value" name="value" type="text" placeholder="0-10">
+                                      </div>
+                                      <div class="grade-row">
                                           <label for="grade-date">Data</label>
                                           <input id="grade-date" name="date" type="date">
                                       </div>
@@ -305,8 +302,7 @@
                                           <button type="button" class="form-cancel-btn" id="cancelGradeEditBtn">Cancelar</button>
                                       </div>
                                   </form>
-                                  <div id="notesList" class="notes-list">No hi ha notes seleccionades.</div>
-                                  <div id="notesHistory" class="notes-history hidden-panel"></div>
+                                  <div id="notesHistory" class="notes-history"></div>
                               </div>
                           </div>
                       </div>
