@@ -102,12 +102,6 @@ sequenceDiagram
   P-->>U: refresc taula + mitjanes
 ```
 
-### 2.3 Dependencia d'externs (CDN)
-- `@supabase/supabase-js` per al client Supabase.
-- `marked` per renderitzar markdown al chat.
-- `chart.js` per a grafics del dashboard.
-- Google Fonts per tipografia.
-
 ---
 
 ## 3. Dades i model
@@ -229,55 +223,7 @@ El dashboard llegeix una taula academica configurada al client (nom intern a `js
 
 ---
 
-## 8. Configuracio
-
-### 8.1 Supabase
-- El client es configura a `js/supabase-config.js`.
-- La clau anonima s'utilitza al frontend (sense service role).
-- RLS ha d'estar desactivat o amb politica permissiva de lectura.
-
-### 8.2 Webhooks n8n
-- Configurats a `js/main.js` i `js/agents.js`.
-- Separats per perfil d'agent.
-
----
-
-## 9. Execucio local
-
-Servidor estàtic:
-```bash
-python -m http.server 5173
-```
-
-Opcional:
-```bash
-npx live-server --open=index.html
-```
-
----
-
-## 10. Limitacions conegudes
-- Arquitectura client-heavy: agregacions i filtratge a la capa de navegador.
-- Dependencia de permissos RLS per a lectura en prototip.
-- Sense autenticacio real d'usuaris.
-
----
-
-## 11. Fitxers rellevants
-- `index.html` (estructura SPA)
-- `css/styles.css` (estils i tema)
-- `js/main.js` (navegacio i inici)
-- `js/agents.js` (chat i webhooks)
-- `js/supabase-config.js` (client Supabase)
-- `js/professorat.js` (logica professorat)
-- `js/dashboard.js` (dashboard directius)
-- `supabase_migration.sql` (esquema)
-- `supabase_rls_setup.sql` (RLS)
-- `supabase_update_notes_to_grades.sql` (migracio grades)
-
----
-
-## 12. Notes metodologiques del TDR
+## 8. Notes metodologiques del TDR
 - El disseny prioritza un prototip funcional, modular i demostrable.
 - L'automatitzacio per agents s'aillla en webhooks per poder substituir IA o proveidors sense tocar la UI.
 - Les dades academiques es concentren en una taula agregada per optimitzar la visualitzacio per directius.
